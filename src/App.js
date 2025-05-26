@@ -173,10 +173,33 @@ const EuskeraApp = () => {
     setUserProgress(initialProgress);
   }, []);
 
-  const playAudio = (text) => {
-    // In a real app, this would play actual audio
-    console.log(`Playing audio: ${text}`);
-  };
+ const playAudio = (text) => {
+  // Use browser's text-to-speech
+  if ('speechSynthesis' in window) {
+    // Stop any currently playing speech
+    window.speechSynthesis.cancel();
+    
+    const utterance = new SpeechSynthesisUtterance(text);
+    
+    // Try to use a Spanish voice for better Basque pronunciation
+    const voices = window.speechSynthesis.getVoices();
+    const spanishVoice = voices.find(voice => 
+      voice.lang.startsWith('es') || voice.lang.startsWith('eu')
+    );
+    
+    if (spanishVoice) {
+      utterance.voice = spanishVoice;
+    }
+    
+    utterance.rate = 0.8; // Slightly slower for learning
+    utterance.pitch = 1.0;
+    utterance.volume = 1.0;
+    
+    window.speechSynthesis.speak(utterance);
+  } else {
+    console.log('Text-to-speech not supported in this browser');
+  }
+};
 
   const handleAnswerSelect = (answer) => {
     setSelectedAnswer(answer);
