@@ -342,143 +342,201 @@ const EuskeraApp = () => {
     return acc;
   }, {});
 
-  const HomeScreen = () => (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 pb-20">
-      {/* Header */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-green-500 rounded-full flex items-center justify-center text-white font-bold text-lg">
-              E
+  // Lesson Screen Component
+  const LessonScreen = () => {
+    const lesson = lessons[currentLesson];
+    const question = lesson.questions[currentQuestion];
+    const isCorrect = selectedAnswer === question.correct;
+
+    if (lessonComplete) {
+      return (
+        <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center">
+          <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4 text-center">
+            <div className="mb-6">
+              <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Trophy className="w-10 h-10 text-green-600" />
+              </div>
+              <h2 className="text-2xl font-bold text-gray-800">Lesson Complete!</h2>
+              <p className="text-gray-600 mt-2">Great job learning {lesson.title}</p>
             </div>
-            <div>
-              <h1 className="text-2xl font-bold text-gray-800">Euskera</h1>
-              <p className="text-sm text-gray-600">Welcome back!</p>
+            
+            <div className="bg-gray-50 rounded-lg p-4 mb-6">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-gray-600">XP Earned</span>
+                <span className="font-bold text-yellow-600">+{lesson.xp}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600">Accuracy</span>
+                <span className="font-bold text-green-600">100%</span>
+              </div>
+            </div>
+            
+            <button
+              onClick={goHome}
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-colors"
+            >
+              Continue Learning
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50">
+        {/* Header */}
+        <div className="bg-white shadow-sm border-b">
+          <div className="max-w-4xl mx-auto px-4 py-4">
+            <div className="flex items-center justify-between">
+              <button onClick={goHome} className="text-gray-600 hover:text-gray-800 text-2xl">
+                ←
+              </button>
+              
+              <div className="flex-1 mx-4">
+                <div className="bg-gray-200 rounded-full h-3">
+                  <div 
+                    className="bg-green-500 h-3 rounded-full transition-all duration-300"
+                    style={{ width: `${((currentQuestion + 1) / lesson.questions.length) * 100}%` }}
+                  ></div>
+                </div>
+              </div>
+              
+              <div className="flex items-center space-x-1 text-red-500">
+                <Heart className="w-5 h-5" />
+                <span className="font-bold">{hearts}</span>
+              </div>
             </div>
           </div>
-          
-          <div className="flex items-center space-x-4">
-            {!isPremium && (
-              <button 
-                onClick={() => openModal('Upgrade to Premium', 'Unlock all lessons, unlimited hearts, offline mode, and premium features for just $9.99/month!')}
-                className="flex items-center space-x-1 bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-3 py-1 rounded-full text-sm font-medium hover:shadow-lg transition-shadow"
-              >
-                <Crown className="w-4 h-4" />
-                <span>Upgrade</span>
-              </button>
+        </div>
+
+        <div className="max-w-2xl mx-auto px-4 py-8">
+          <div className="bg-white rounded-2xl shadow-lg p-8">
+            {/* Question */}
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold text-gray-800 mb-4">{question.question}</h2>
+              
+              {question.basque && (
+                <div className="bg-blue-50 rounded-lg p-4 mb-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="text-2xl font-bold text-blue-800 mb-1">{question.basque}</div>
+                      <div className="text-sm text-blue-600">/{question.audio}/</div>
+                    </div>
+                    <button
+                      onClick={() => playAudio(question.basque)}
+                      className="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full transition-colors"
+                    >
+                      <Volume2 className="w-5 h-5" />
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Answer Options */}
+            <div className="space-y-3 mb-8">
+              {question.options.map((option, index) => {
+                let buttonClass = "w-full p-4 text-left border-2 rounded-lg font-medium transition-all ";
+                
+                if (showResult) {
+                  if (option === question.correct) {
+                    buttonClass += "border-green-500 bg-green-50 text-green-800";
+                  } else if (option === selectedAnswer && option !== question.correct) {
+                    buttonClass += "border-red-500 bg-red-50 text-red-800";
+                  } else {
+                    buttonClass += "border-gray-200 bg-gray-50 text-gray-500";
+                  }
+                } else if (selectedAnswer === option) {
+                  buttonClass += "border-blue-500 bg-blue-50 text-blue-800";
+                } else {
+                  buttonClass += "border-gray-200 hover:border-gray-300 hover:bg-gray-50 text-gray-800";
+                }
+
+                return (
+                  <button
+                    key={index}
+                    onClick={() => !showResult && handleAnswerSelect(option)}
+                    className={buttonClass}
+                    disabled={showResult}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span>{option}</span>
+                      {showResult && option === question.correct && (
+                        <CheckCircle className="w-6 h-6 text-green-600" />
+                      )}
+                      {showResult && option === selectedAnswer && option !== question.correct && (
+                        <XCircle className="w-6 h-6 text-red-600" />
+                      )}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Result Message */}
+            {showResult && (
+              <div className={`p-4 rounded-lg mb-6 ${
+                isCorrect ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'
+              }`}>
+                <div className="flex items-center space-x-3">
+                  {isCorrect ? (
+                    <CheckCircle className="w-6 h-6 text-green-600" />
+                  ) : (
+                    <XCircle className="w-6 h-6 text-red-600" />
+                  )}
+                  <div>
+                    <div className={`font-semibold ${isCorrect ? 'text-green-800' : 'text-red-800'}`}>
+                      {isCorrect ? 'Excellent!' : 'Not quite'}
+                    </div>
+                    <div className={`text-sm ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>
+                      {question.translation}
+                    </div>
+                  </div>
+                </div>
+              </div>
             )}
-            <div className="flex items-center space-x-2 text-orange-600">
-              <Flame className="w-5 h-5" />
-              <span className="font-bold">{streak}</span>
+
+            {/* Progress */}
+            <div className="text-center text-gray-500 text-sm">
+              Question {currentQuestion + 1} of {lesson.questions.length}
             </div>
-            <div className="flex items-center space-x-2 text-red-500">
-              <Heart className="w-5 h-5" />
-              <span className="font-bold">{hearts}</span>
-            </div>
-            <div className="flex items-center space-x-2 text-yellow-600">
-              <Star className="w-5 h-5" />
-              <span className="font-bold">{xp} XP</span>
-            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const FriendsScreen = () => (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 pb-20">
+      <div className="bg-white shadow-sm border-b">
+        <div className="max-w-4xl mx-auto px-4 py-4">
+          <div className="flex items-center space-x-4">
+            <button 
+              onClick={() => setCurrentScreen('home')}
+              className="w-10 h-10 bg-gradient-to-r from-blue-500 to-green-500 rounded-full flex items-center justify-center text-white font-bold text-lg"
+            >
+              E
+            </button>
+            <h1 className="text-2xl font-bold text-gray-800">Friends</h1>
           </div>
         </div>
       </div>
 
       <div className="max-w-4xl mx-auto px-4 py-8">
-        {/* Progress Overview */}
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
-          <h3 className="text-xl font-semibold mb-4">Your Progress</h3>
-          <div className="grid grid-cols-3 gap-6">
-            <div className="text-center">
-              <div className="text-3xl font-bold text-blue-600">{Object.values(userProgress).filter(Boolean).length}</div>
-              <div className="text-gray-600">Lessons Completed</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-green-600">{streak}</div>
-              <div className="text-gray-600">Day Streak</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-yellow-600">{xp}</div>
-              <div className="text-gray-600">Total XP</div>
-            </div>
+        <div className="bg-white rounded-xl shadow-lg p-6">
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">Learning Community</h2>
+          
+          <div className="text-center py-8">
+            <Users className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-gray-600 mb-2">Start Your Community</h3>
+            <p className="text-gray-500 mb-4">Invite friends to learn Basque together!</p>
+            <button className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-lg">
+              Invite Friends
+            </button>
           </div>
         </div>
-
-        {/* Lesson Categories */}
-        {Object.entries(groupedLessons).map(([category, categoryLessons]) => (
-          <div key={category} className="mb-8">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4 flex items-center">
-              {category}
-              {category !== 'Basics' && (
-                <Crown className="w-6 h-6 text-yellow-500 ml-2" />
-              )}
-            </h2>
-            
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {categoryLessons.map((lesson, index) => {
-                const globalIndex = lessons.findIndex(l => l.id === lesson.id);
-                const isLocked = lesson.isPremium && !isPremium;
-                const isCompleted = userProgress[lesson.id];
-                
-                return (
-                  <div key={lesson.id} className={`bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow ${isLocked ? 'opacity-75' : ''}`}>
-                    <div className="p-6">
-                      <div className="flex items-center justify-between mb-4">
-                        <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                          isCompleted ? 'bg-green-100 text-green-600' : 
-                          isLocked ? 'bg-gray-100 text-gray-400' : 'bg-blue-100 text-blue-600'
-                        }`}>
-                          {isLocked ? <Lock className="w-6 h-6" /> : 
-                           isCompleted ? <CheckCircle className="w-6 h-6" /> : <Book className="w-6 h-6" />}
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          {lesson.isPremium && (
-                            <Crown className="w-4 h-4 text-yellow-500" />
-                          )}
-                          <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                            lesson.difficulty === 'Beginner' ? 'bg-green-100 text-green-800' :
-                            lesson.difficulty === 'Intermediate' ? 'bg-yellow-100 text-yellow-800' :
-                            'bg-red-100 text-red-800'
-                          }`}>
-                            {lesson.difficulty}
-                          </span>
-                        </div>
-                      </div>
-                      
-                      <h3 className="text-xl font-semibold text-gray-800 mb-2">{lesson.title}</h3>
-                      <p className="text-gray-600 mb-4">{lesson.description}</p>
-                      
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-2 text-yellow-600">
-                          <Star className="w-4 h-4" />
-                          <span className="text-sm font-medium">{lesson.xp} XP</span>
-                        </div>
-                        
-                        <button
-                          onClick={() => startLesson(globalIndex)}
-                          className={`px-6 py-2 rounded-lg font-medium transition-colors ${
-                            isLocked 
-                              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                              : isCompleted 
-                              ? 'bg-green-600 hover:bg-green-700 text-white' 
-                              : 'bg-blue-600 hover:bg-blue-700 text-white'
-                          }`}
-                        >
-                          {isLocked ? 'Premium' : isCompleted ? 'Review' : 'Start'}
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        ))}
       </div>
 
-      {/* Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg">
-        <div className="max-w-4xl mx-auto px-4">
-          <div className="flex justify-around py-3">
       {/* Navigation */}
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg">
         <div className="max-w-4xl mx-auto px-4">
@@ -791,7 +849,11 @@ const EuskeraApp = () => {
   );
 };
 
-export default EuskeraApp;`flex flex-col items-center space-y-1 ${currentScreen === 'home' ? 'text-blue-600' : 'text-gray-400'}`}
+export default EuskeraApp; mx-auto px-4">
+          <div className="flex justify-around py-3">
+            <button 
+              onClick={() => setCurrentScreen('home')} 
+              className={`flex flex-col items-center space-y-1 ${currentScreen === 'home' ? 'text-blue-600' : 'text-gray-400'}`}
             >
               <Home className="w-6 h-6" />
               <span className="text-xs font-medium">Home</span>
@@ -823,205 +885,139 @@ export default EuskeraApp;`flex flex-col items-center space-y-1 ${currentScreen 
     </div>
   );
 
-  // Lesson Screen
-  const LessonScreen = () => {
-    const lesson = lessons[currentLesson];
-    const question = lesson.questions[currentQuestion];
-    const isCorrect = selectedAnswer === question.correct;
-
-    if (lessonComplete) {
-      return (
-        <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center">
-          <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4 text-center">
-            <div className="mb-6">
-              <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Trophy className="w-10 h-10 text-green-600" />
-              </div>
-              <h2 className="text-2xl font-bold text-gray-800">Lesson Complete!</h2>
-              <p className="text-gray-600 mt-2">Great job learning {lesson.title}</p>
-            </div>
-            
-            <div className="bg-gray-50 rounded-lg p-4 mb-6">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-gray-600">XP Earned</span>
-                <span className="font-bold text-yellow-600">+{lesson.xp}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">Accuracy</span>
-                <span className="font-bold text-green-600">100%</span>
-              </div>
-            </div>
-            
-            <button
-              onClick={goHome}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-colors"
-            >
-              Continue Learning
-            </button>
-          </div>
-        </div>
-      );
-    }
-
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50">
-        {/* Header */}
-        <div className="bg-white shadow-sm border-b">
-          <div className="max-w-4xl mx-auto px-4 py-4">
-            <div className="flex items-center justify-between">
-              <button onClick={goHome} className="text-gray-600 hover:text-gray-800 text-2xl">
-                ←
-              </button>
-              
-              <div className="flex-1 mx-4">
-                <div className="bg-gray-200 rounded-full h-3">
-                  <div 
-                    className="bg-green-500 h-3 rounded-full transition-all duration-300"
-                    style={{ width: `${((currentQuestion + 1) / lesson.questions.length) * 100}%` }}
-                  ></div>
-                </div>
-              </div>
-              
-              <div className="flex items-center space-x-1 text-red-500">
-                <Heart className="w-5 h-5" />
-                <span className="font-bold">{hearts}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="max-w-2xl mx-auto px-4 py-8">
-          <div className="bg-white rounded-2xl shadow-lg p-8">
-            {/* Question */}
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-800 mb-4">{question.question}</h2>
-              
-              {question.basque && (
-                <div className="bg-blue-50 rounded-lg p-4 mb-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="text-2xl font-bold text-blue-800 mb-1">{question.basque}</div>
-                      <div className="text-sm text-blue-600">/{question.audio}/</div>
-                    </div>
-                    <button
-                      onClick={() => playAudio(question.basque)}
-                      className="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full transition-colors"
-                    >
-                      <Volume2 className="w-5 h-5" />
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Answer Options */}
-            <div className="space-y-3 mb-8">
-              {question.options.map((option, index) => {
-                let buttonClass = "w-full p-4 text-left border-2 rounded-lg font-medium transition-all ";
-                
-                if (showResult) {
-                  if (option === question.correct) {
-                    buttonClass += "border-green-500 bg-green-50 text-green-800";
-                  } else if (option === selectedAnswer && option !== question.correct) {
-                    buttonClass += "border-red-500 bg-red-50 text-red-800";
-                  } else {
-                    buttonClass += "border-gray-200 bg-gray-50 text-gray-500";
-                  }
-                } else if (selectedAnswer === option) {
-                  buttonClass += "border-blue-500 bg-blue-50 text-blue-800";
-                } else {
-                  buttonClass += "border-gray-200 hover:border-gray-300 hover:bg-gray-50 text-gray-800";
-                }
-
-                return (
-                  <button
-                    key={index}
-                    onClick={() => !showResult && handleAnswerSelect(option)}
-                    className={buttonClass}
-                    disabled={showResult}
-                  >
-                    <div className="flex items-center justify-between">
-                      <span>{option}</span>
-                      {showResult && option === question.correct && (
-                        <CheckCircle className="w-6 h-6 text-green-600" />
-                      )}
-                      {showResult && option === selectedAnswer && option !== question.correct && (
-                        <XCircle className="w-6 h-6 text-red-600" />
-                      )}
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Result Message */}
-            {showResult && (
-              <div className={`p-4 rounded-lg mb-6 ${
-                isCorrect ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'
-              }`}>
-                <div className="flex items-center space-x-3">
-                  {isCorrect ? (
-                    <CheckCircle className="w-6 h-6 text-green-600" />
-                  ) : (
-                    <XCircle className="w-6 h-6 text-red-600" />
-                  )}
-                  <div>
-                    <div className={`font-semibold ${isCorrect ? 'text-green-800' : 'text-red-800'}`}>
-                      {isCorrect ? 'Excellent!' : 'Not quite'}
-                    </div>
-                    <div className={`text-sm ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>
-                      {question.translation}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Progress */}
-            <div className="text-center text-gray-500 text-sm">
-              Question {currentQuestion + 1} of {lesson.questions.length}
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  const FriendsScreen = () => (
+  const HomeScreen = () => (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 pb-20">
+      {/* Header */}
       <div className="bg-white shadow-sm border-b">
-        <div className="max-w-4xl mx-auto px-4 py-4">
+        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <button 
-              onClick={() => setCurrentScreen('home')}
-              className="w-10 h-10 bg-gradient-to-r from-blue-500 to-green-500 rounded-full flex items-center justify-center text-white font-bold text-lg"
-            >
+            <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-green-500 rounded-full flex items-center justify-center text-white font-bold text-lg">
               E
-            </button>
-            <h1 className="text-2xl font-bold text-gray-800">Friends</h1>
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-800">Euskera</h1>
+              <p className="text-sm text-gray-600">Welcome back!</p>
+            </div>
+          </div>
+          
+          <div className="flex items-center space-x-4">
+            {!isPremium && (
+              <button 
+                onClick={() => openModal('Upgrade to Premium', 'Unlock all lessons, unlimited hearts, offline mode, and premium features for just $9.99/month!')}
+                className="flex items-center space-x-1 bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-3 py-1 rounded-full text-sm font-medium hover:shadow-lg transition-shadow"
+              >
+                <Crown className="w-4 h-4" />
+                <span>Upgrade</span>
+              </button>
+            )}
+            <div className="flex items-center space-x-2 text-orange-600">
+              <Flame className="w-5 h-5" />
+              <span className="font-bold">{streak}</span>
+            </div>
+            <div className="flex items-center space-x-2 text-red-500">
+              <Heart className="w-5 h-5" />
+              <span className="font-bold">{hearts}</span>
+            </div>
+            <div className="flex items-center space-x-2 text-yellow-600">
+              <Star className="w-5 h-5" />
+              <span className="font-bold">{xp} XP</span>
+            </div>
           </div>
         </div>
       </div>
 
       <div className="max-w-4xl mx-auto px-4 py-8">
-        <div className="bg-white rounded-xl shadow-lg p-6">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">Learning Community</h2>
-          
-          <div className="text-center py-8">
-            <Users className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-gray-600 mb-2">Start Your Community</h3>
-            <p className="text-gray-500 mb-4">Invite friends to learn Basque together!</p>
-            <button className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-lg">
-              Invite Friends
-            </button>
+        {/* Progress Overview */}
+        <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
+          <h3 className="text-xl font-semibold mb-4">Your Progress</h3>
+          <div className="grid grid-cols-3 gap-6">
+            <div className="text-center">
+              <div className="text-3xl font-bold text-blue-600">{Object.values(userProgress).filter(Boolean).length}</div>
+              <div className="text-gray-600">Lessons Completed</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-green-600">{streak}</div>
+              <div className="text-gray-600">Day Streak</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-yellow-600">{xp}</div>
+              <div className="text-gray-600">Total XP</div>
+            </div>
           </div>
         </div>
+
+        {/* Lesson Categories */}
+        {Object.entries(groupedLessons).map(([category, categoryLessons]) => (
+          <div key={category} className="mb-8">
+            <h2 className="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+              {category}
+              {category !== 'Basics' && (
+                <Crown className="w-6 h-6 text-yellow-500 ml-2" />
+              )}
+            </h2>
+            
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {categoryLessons.map((lesson, index) => {
+                const globalIndex = lessons.findIndex(l => l.id === lesson.id);
+                const isLocked = lesson.isPremium && !isPremium;
+                const isCompleted = userProgress[lesson.id];
+                
+                return (
+                  <div key={lesson.id} className={`bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow ${isLocked ? 'opacity-75' : ''}`}>
+                    <div className="p-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                          isCompleted ? 'bg-green-100 text-green-600' : 
+                          isLocked ? 'bg-gray-100 text-gray-400' : 'bg-blue-100 text-blue-600'
+                        }`}>
+                          {isLocked ? <Lock className="w-6 h-6" /> : 
+                           isCompleted ? <CheckCircle className="w-6 h-6" /> : <Book className="w-6 h-6" />}
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          {lesson.isPremium && (
+                            <Crown className="w-4 h-4 text-yellow-500" />
+                          )}
+                          <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                            lesson.difficulty === 'Beginner' ? 'bg-green-100 text-green-800' :
+                            lesson.difficulty === 'Intermediate' ? 'bg-yellow-100 text-yellow-800' :
+                            'bg-red-100 text-red-800'
+                          }`}>
+                            {lesson.difficulty}
+                          </span>
+                        </div>
+                      </div>
+                      
+                      <h3 className="text-xl font-semibold text-gray-800 mb-2">{lesson.title}</h3>
+                      <p className="text-gray-600 mb-4">{lesson.description}</p>
+                      
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2 text-yellow-600">
+                          <Star className="w-4 h-4" />
+                          <span className="text-sm font-medium">{lesson.xp} XP</span>
+                        </div>
+                        
+                        <button
+                          onClick={() => startLesson(globalIndex)}
+                          className={`px-6 py-2 rounded-lg font-medium transition-colors ${
+                            isLocked 
+                              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                              : isCompleted 
+                              ? 'bg-green-600 hover:bg-green-700 text-white' 
+                              : 'bg-blue-600 hover:bg-blue-700 text-white'
+                          }`}
+                        >
+                          {isLocked ? 'Premium' : isCompleted ? 'Review' : 'Start'}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        ))}
       </div>
 
       {/* Navigation */}
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg">
-        <div className="max-w-4xl mx-auto px-4">
-          <div className="flex justify-around py-3">
-            <button 
-              onClick={() => setCurrentScreen('home')} 
-              className={
+        <div className="max-w-4xl
