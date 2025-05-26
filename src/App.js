@@ -6,7 +6,7 @@ import { initializeApp } from 'firebase/app';
 import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { getFirestore, doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
 
-// Firebase configuration
+// Firebase configuration with better error handling
 const firebaseConfig = {
   apiKey: "AIzaSyDW1TaQRTk1_N7JPJAvKsaJBmbI_DGsJ68",
   authDomain: "euskera-learning-app.firebaseapp.com",
@@ -17,10 +17,18 @@ const firebaseConfig = {
   measurementId: "G-6CFH074GLD"
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+// Initialize Firebase with error handling
+let app, auth, db;
+try {
+  app = initializeApp(firebaseConfig);
+  auth = getAuth(app);
+  db = getFirestore(app);
+} catch (error) {
+  console.error('Firebase initialization error:', error);
+  // Create mock objects to prevent crashes
+  auth = { currentUser: null };
+  db = null;
+}
 const googleProvider = new GoogleAuthProvider();
 
 const EuskeraApp = () => {
@@ -50,32 +58,57 @@ const EuskeraApp = () => {
   const [showModal, setShowModal] = useState(false);
   const [modalContent, setModalContent] = useState({ title: '', content: '' });
 
-  // Authentication state listener
+  // Authentication state listener with better error handling
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        setUser(user);
-        // Load user progress in background, don't block UI
-        loadUserProgress(user.uid);
+    let unsubscribe;
+    
+    try {
+      if (auth && auth.onAuthStateChanged) {
+        unsubscribe = onAuthStateChanged(auth, async (user) => {
+          console.log('Auth state changed:', user ? 'User logged in' : 'No user');
+          if (user) {
+            setUser(user);
+            // Load user progress in background, don't block UI
+            if (db) {
+              loadUserProgress(user.uid);
+            } else {
+              console.warn('Firestore not available, using local storage');
+              loadLocalProgress();
+            }
+          } else {
+            setUser(null);
+          }
+          setLoading(false);
+        });
       } else {
-        setUser(null);
+        console.warn('Firebase Auth not available');
+        setLoading(false);
       }
+    } catch (error) {
+      console.error('Auth listener error:', error);
       setLoading(false);
-    });
+    }
 
     // Set a maximum loading time to prevent infinite loading
     const loadingTimeout = setTimeout(() => {
+      console.log('Loading timeout reached');
       setLoading(false);
-    }, 3000); // Max 3 seconds loading
+    }, 3000);
 
     return () => {
-      unsubscribe();
+      if (unsubscribe) unsubscribe();
       clearTimeout(loadingTimeout);
     };
   }, []);
 
-  // Load user progress from Firestore
+  // Load user progress from Firestore with fallback
   const loadUserProgress = async (userId) => {
+    if (!db) {
+      console.warn('Firestore not available, using local progress');
+      loadLocalProgress();
+      return;
+    }
+
     try {
       const userDoc = await getDoc(doc(db, 'users', userId));
       if (userDoc.exists()) {
@@ -84,6 +117,7 @@ const EuskeraApp = () => {
         setXp(userData.xp || 0);
         setStreak(userData.streak || 1);
         setHearts(userData.hearts || 5);
+        console.log('Loaded progress from Firestore');
       } else {
         // Create new user document
         const newUserData = {
@@ -94,17 +128,57 @@ const EuskeraApp = () => {
           createdAt: new Date()
         };
         await setDoc(doc(db, 'users', userId), newUserData);
+        console.log('Created new user document');
       }
     } catch (error) {
-      console.error('Error loading user progress:', error);
-      // Don't block the UI if there's an error loading progress
-      // User can still use the app with default values
+      console.error('Error loading user progress from Firestore:', error);
+      console.log('Falling back to local progress');
+      loadLocalProgress();
     }
   };
 
-  // Save user progress to Firestore
+  // Fallback: Load progress from localStorage
+  const loadLocalProgress = () => {
+    try {
+      const savedProgress = localStorage.getItem('euskera-progress');
+      if (savedProgress) {
+        const data = JSON.parse(savedProgress);
+        setUserProgress(data.progress || {});
+        setXp(data.xp || 0);
+        setStreak(data.streak || 1);
+        setHearts(data.hearts || 5);
+        console.log('Loaded progress from localStorage');
+      }
+    } catch (error) {
+      console.error('Error loading local progress:', error);
+    }
+  };
+
+  // Save progress locally as backup
+  const saveLocalProgress = () => {
+    try {
+      const progressData = {
+        progress: userProgress,
+        xp: xp,
+        streak: streak,
+        hearts: hearts,
+        lastUpdated: new Date().toISOString()
+      };
+      localStorage.setItem('euskera-progress', JSON.stringify(progressData));
+    } catch (error) {
+      console.error('Error saving local progress:', error);
+    }
+  };
+
+  // Save user progress to Firestore with fallback
   const saveUserProgress = async () => {
-    if (!user) return;
+    // Always save locally as backup
+    saveLocalProgress();
+    
+    if (!user || !db) {
+      console.log('No user or Firestore, progress saved locally only');
+      return;
+    }
     
     try {
       await updateDoc(doc(db, 'users', user.uid), {
@@ -114,8 +188,10 @@ const EuskeraApp = () => {
         hearts: hearts,
         lastUpdated: new Date()
       });
+      console.log('Progress saved to Firestore');
     } catch (error) {
-      console.error('Error saving user progress:', error);
+      console.error('Error saving user progress to Firestore:', error);
+      console.log('Progress saved locally as fallback');
     }
   };
 
@@ -126,14 +202,25 @@ const EuskeraApp = () => {
     }
   }, [userProgress, xp, streak, hearts, user]);
 
-  // Google Sign In
+  // Google Sign In with better error handling
   const signInWithGoogle = async () => {
+    if (!auth || !googleProvider) {
+      alert('Authentication not available. Please refresh the page.');
+      return;
+    }
+
     try {
       setAuthLoading(true);
       await signInWithPopup(auth, googleProvider);
     } catch (error) {
       console.error('Error signing in with Google:', error);
-      alert('Error signing in with Google. Please try again.');
+      if (error.code === 'auth/popup-blocked') {
+        alert('Popup was blocked. Please allow popups for this site and try again.');
+      } else if (error.code === 'auth/network-request-failed') {
+        alert('Network error. Please check your connection and try again.');
+      } else {
+        alert('Error signing in with Google. Please try again.');
+      }
     } finally {
       setAuthLoading(false);
     }
