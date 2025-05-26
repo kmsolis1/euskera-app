@@ -555,7 +555,7 @@ const EuskeraApp = () => {
     );
   }
 
-  // Modal Component
+  // Modal Component with improved styling
   const Modal = ({ isOpen, onClose, title, content }) => {
     if (!isOpen) return null;
 
@@ -567,20 +567,37 @@ const EuskeraApp = () => {
               <h2 className="text-xl font-bold text-gray-800">{title}</h2>
               <button
                 onClick={onClose}
-                className="text-gray-600 hover:text-gray-800 text-2xl"
+                className="text-gray-600 hover:text-gray-800 text-2xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100"
               >
                 ×
               </button>
             </div>
-            <div className="text-gray-600 leading-relaxed">
+            <div className="text-gray-600 leading-relaxed mb-6">
               {content}
             </div>
-            <button
-              onClick={onClose}
-              className="w-full mt-6 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-colors"
-            >
-              Got it
-            </button>
+            <div className="space-y-3">
+              <button
+                onClick={onClose}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-colors"
+              >
+                Got it
+              </button>
+              {title.includes('Share') && (
+                <button
+                  onClick={async () => {
+                    try {
+                      await navigator.clipboard.writeText(window.location.origin);
+                      onClose();
+                    } catch (error) {
+                      console.error('Could not copy to clipboard');
+                    }
+                  }}
+                  className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-3 px-6 rounded-lg transition-colors"
+                >
+                  Copy Link Again
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </div>
