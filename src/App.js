@@ -928,10 +928,11 @@ export default EuskeraApp;gray-600">XP Earned</span>
           </div>
         ))}
       </div>
+    </div>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg">
-        <div className="max-w-4xl mx-auto px-4">
-          <div className="flex justify-around py-3">
+    <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg">
+      <div className="max-w-4xl mx-auto px-4">
+        <div className="flex justify-around py-3">
             <button 
               onClick={() => setCurrentScreen('home')} 
               className={`flex flex-col items-center space-y-1 ${currentScreen === 'home' ? 'text-blue-600' : 'text-gray-400'}`}
