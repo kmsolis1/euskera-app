@@ -306,7 +306,7 @@ const EuskeraApp = () => {
     const isCorrect = answer === currentQ.correct;
     
     if (isCorrect) {
-      setXp(xp + 5);
+      setXp(prev => prev + 5);
     } else {
       setHearts(Math.max(0, hearts - 1));
     }
@@ -321,7 +321,7 @@ const EuskeraApp = () => {
         const newProgress = { ...userProgress };
         newProgress[lessons[currentLesson].id] = true;
         setUserProgress(newProgress);
-        setXp(xp + lessons[currentLesson].xp);
+        setXp(prev => prev + lessons[currentLesson].xp);
       }
     }, 1500);
   };
