@@ -43,25 +43,35 @@ const EuskeraApp = () => {
   const [name, setName] = useState('');
   const [authLoading, setAuthLoading] = useState(false);
   const [friends, setFriends] = useState([
-    { id: 1, name: 'Maria Garcia', xp: 2150, streak: 12, avatar: '👩🏻', status: 'Learning Colors' },
-    { id: 2, name: 'Jon Smith', xp: 1890, streak: 8, avatar: '👨🏼', status: 'Completed Greetings' },
-    { id: 3, name: 'Anna Rodriguez', xp: 3200, streak: 20, avatar: '👩🏽', status: 'Learning Numbers' },
-    { id: 4, name: 'David Kim', xp: 980, streak: 5, avatar: '👨🏻', status: 'New Learner' }
+    // Start with just a few realistic demo users to populate the leaderboard
+    { id: 'demo1', name: 'Alex Chen', xp: 1250, streak: 8, avatar: '🧑🏻‍💻', status: 'Learning Numbers', isDemo: true },
+    { id: 'demo2', name: 'Sara Kim', xp: 890, streak: 5, avatar: '👩🏻‍🎓', status: 'Completed Greetings', isDemo: true }
   ]);
+  const [showModal, setShowModal] = useState(false);
+  const [modalContent, setModalContent] = useState({ title: '', content: '' });
 
   // Authentication state listener
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         setUser(user);
-        await loadUserProgress(user.uid);
+        // Load user progress in background, don't block UI
+        loadUserProgress(user.uid);
       } else {
         setUser(null);
       }
       setLoading(false);
     });
 
-    return () => unsubscribe();
+    // Set a maximum loading time to prevent infinite loading
+    const loadingTimeout = setTimeout(() => {
+      setLoading(false);
+    }, 3000); // Max 3 seconds loading
+
+    return () => {
+      unsubscribe();
+      clearTimeout(loadingTimeout);
+    };
   }, []);
 
   // Load user progress from Firestore
@@ -87,6 +97,8 @@ const EuskeraApp = () => {
       }
     } catch (error) {
       console.error('Error loading user progress:', error);
+      // Don't block the UI if there's an error loading progress
+      // User can still use the app with default values
     }
   };
 
@@ -421,15 +433,19 @@ const EuskeraApp = () => {
     setLessonComplete(false);
   };
 
-  // Loading screen
+  // Loading screen with faster, more engaging animation
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-green-500 rounded-full flex items-center justify-center text-white font-bold text-2xl mb-4 mx-auto">
-            E
+          <div className="relative mb-6">
+            <div className="w-20 h-20 bg-gradient-to-r from-blue-500 to-green-500 rounded-full flex items-center justify-center text-white font-bold text-3xl mx-auto animate-pulse">
+              E
+            </div>
+            <div className="absolute inset-0 w-20 h-20 border-4 border-blue-200 rounded-full animate-spin border-t-blue-500 mx-auto"></div>
           </div>
-          <div className="text-xl text-gray-600">Loading Euskera...</div>
+          <div className="text-lg text-gray-700 font-medium">Euskera</div>
+          <div className="text-sm text-gray-500 mt-1">Loading your progress...</div>
         </div>
       </div>
     );
@@ -539,16 +555,49 @@ const EuskeraApp = () => {
     );
   }
 
-  // Friends Screen Component
+  // Modal Component
+  const Modal = ({ isOpen, onClose, title, content }) => {
+    if (!isOpen) return null;
+
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full max-h-[80vh] overflow-y-auto">
+          <div className="p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold text-gray-800">{title}</h2>
+              <button
+                onClick={onClose}
+                className="text-gray-600 hover:text-gray-800 text-2xl"
+              >
+                ×
+              </button>
+            </div>
+            <div className="text-gray-600 leading-relaxed">
+              {content}
+            </div>
+            <button
+              onClick={onClose}
+              className="w-full mt-6 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-colors"
+            >
+              Got it
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
   const FriendsScreen = () => (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 pb-20">
       {/* Header */}
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-green-500 rounded-full flex items-center justify-center text-white font-bold text-lg">
+            <button 
+              onClick={() => setCurrentScreen('home')}
+              className="w-10 h-10 bg-gradient-to-r from-blue-500 to-green-500 rounded-full flex items-center justify-center text-white font-bold text-lg hover:shadow-lg transition-shadow"
+            >
               E
-            </div>
+            </button>
             <h1 className="text-2xl font-bold text-gray-800">Friends</h1>
           </div>
           
@@ -587,41 +636,93 @@ const EuskeraApp = () => {
 
         {/* Friends List */}
         <div className="bg-white rounded-xl shadow-lg p-6">
-          <h3 className="text-xl font-semibold text-gray-800 mb-4">Your Learning Community</h3>
-          <div className="space-y-4">
-            {friends.sort((a, b) => b.xp - a.xp).map((friend, index) => (
-              <div key={friend.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                <div className="flex items-center space-x-4">
-                  <div className="relative">
-                    <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-2xl">
-                      {friend.avatar}
-                    </div>
-                    <div className="absolute -top-1 -right-1 w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
-                      {index + 1}
-                    </div>
-                  </div>
-                  <div>
-                    <div className="font-semibold text-gray-800">{friend.name}</div>
-                    <div className="text-sm text-gray-600">{friend.status}</div>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <div className="font-bold text-blue-600">{friend.xp} XP</div>
-                  <div className="text-sm text-orange-600 flex items-center space-x-1">
-                    <Flame className="w-4 h-4" />
-                    <span>{friend.streak}</span>
-                  </div>
-                </div>
-              </div>
-            ))}
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-xl font-semibold text-gray-800">Learning Community</h3>
+            <span className="text-sm text-gray-500">{friends.length + 1} learners</span>
           </div>
+
+          {friends.length === 0 ? (
+            <div className="text-center py-8">
+              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Users className="w-8 h-8 text-gray-400" />
+              </div>
+              <h4 className="text-lg font-semibold text-gray-600 mb-2">No friends yet</h4>
+              <p className="text-gray-500 mb-4">Invite friends to learn Basque together!</p>
+              <button 
+                onClick={shareApp}
+                className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+              >
+                Invite Friends
+              </button>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {/* All learners including user */}
+              {[
+                {
+                  id: 'current-user',
+                  name: user?.displayName || user?.email?.split('@')[0] || 'You',
+                  xp: xp,
+                  streak: streak,
+                  avatar: user?.displayName?.[0] || user?.email?.[0] || '👤',
+                  status: `${Object.values(userProgress).filter(Boolean).length} lessons completed`,
+                  isCurrentUser: true
+                },
+                ...friends
+              ]
+              .sort((a, b) => b.xp - a.xp)
+              .map((person, index) => (
+                <div key={person.id} className={`flex items-center justify-between p-4 rounded-lg transition-colors ${
+                  person.isCurrentUser 
+                    ? 'bg-gradient-to-r from-blue-50 to-green-50 border-2 border-blue-200' 
+                    : 'bg-gray-50 hover:bg-gray-100'
+                }`}>
+                  <div className="flex items-center space-x-4">
+                    <div className="relative">
+                      <div className={`w-12 h-12 rounded-full flex items-center justify-center text-2xl ${
+                        person.isCurrentUser 
+                          ? 'bg-gradient-to-r from-blue-500 to-green-500 text-white font-bold'
+                          : 'bg-blue-100'
+                      }`}>
+                        {person.isCurrentUser ? (person.avatar.length === 1 ? person.avatar : person.avatar[0]) : person.avatar}
+                      </div>
+                      <div className={`absolute -top-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold ${
+                        index === 0 ? 'bg-yellow-500' : index === 1 ? 'bg-gray-400' : index === 2 ? 'bg-amber-600' : 'bg-blue-500'
+                      }`}>
+                        {index + 1}
+                      </div>
+                    </div>
+                    <div>
+                      <div className={`font-semibold ${person.isCurrentUser ? 'text-blue-800' : 'text-gray-800'}`}>
+                        {person.name} {person.isCurrentUser && '(You)'}
+                      </div>
+                      <div className={`text-sm ${person.isCurrentUser ? 'text-blue-600' : 'text-gray-600'}`}>
+                        {person.status}
+                        {person.isDemo && <span className="ml-2 text-xs bg-gray-200 px-2 py-1 rounded">Demo</span>}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="font-bold text-blue-600">{person.xp} XP</div>
+                    <div className="text-sm text-orange-600 flex items-center space-x-1">
+                      <Flame className="w-4 h-4" />
+                      <span>{person.streak}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Invite Friends */}
         <div className="bg-white rounded-xl shadow-lg p-6 mt-6">
           <h3 className="text-xl font-semibold text-gray-800 mb-4">Invite Friends</h3>
           <p className="text-gray-600 mb-4">Learning is more fun with friends! Invite them to join you on Euskera.</p>
-          <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-colors">
+          <button 
+            onClick={shareApp}
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-colors"
+          >
             Share Euskera
           </button>
         </div>
@@ -636,9 +737,12 @@ const EuskeraApp = () => {
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-green-500 rounded-full flex items-center justify-center text-white font-bold text-lg">
+            <button 
+              onClick={() => setCurrentScreen('home')}
+              className="w-10 h-10 bg-gradient-to-r from-blue-500 to-green-500 rounded-full flex items-center justify-center text-white font-bold text-lg hover:shadow-lg transition-shadow"
+            >
               E
-            </div>
+            </button>
             <h1 className="text-2xl font-bold text-gray-800">Achievements</h1>
           </div>
           
@@ -768,9 +872,12 @@ const EuskeraApp = () => {
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-green-500 rounded-full flex items-center justify-center text-white font-bold text-lg">
+            <button 
+              onClick={() => setCurrentScreen('home')}
+              className="w-10 h-10 bg-gradient-to-r from-blue-500 to-green-500 rounded-full flex items-center justify-center text-white font-bold text-lg hover:shadow-lg transition-shadow"
+            >
               E
-            </div>
+            </button>
             <h1 className="text-2xl font-bold text-gray-800">Settings</h1>
           </div>
           
@@ -873,13 +980,22 @@ const EuskeraApp = () => {
         <div className="bg-white rounded-xl shadow-lg p-6">
           <h3 className="text-xl font-semibold text-gray-800 mb-4">Account</h3>
           <div className="space-y-3">
-            <button className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-3 px-6 rounded-lg transition-colors text-left">
+            <button 
+              onClick={() => openModal('Privacy Policy', 'At Euskera, we take your privacy seriously. We collect minimal data necessary to provide our language learning service. Your learning progress is stored securely and never shared with third parties. We use industry-standard encryption to protect your data. You can request deletion of your data at any time by contacting support.')}
+              className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-3 px-6 rounded-lg transition-colors text-left"
+            >
               Privacy Policy
             </button>
-            <button className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-3 px-6 rounded-lg transition-colors text-left">
+            <button 
+              onClick={() => openModal('Terms of Service', 'By using Euskera, you agree to our terms. Our service is provided "as is" for educational purposes. You are responsible for maintaining the confidentiality of your account. We reserve the right to modify the service and these terms. Prohibited uses include sharing accounts or using the service for commercial purposes without permission.')}
+              className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-3 px-6 rounded-lg transition-colors text-left"
+            >
               Terms of Service
             </button>
-            <button className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-3 px-6 rounded-lg transition-colors text-left">
+            <button 
+              onClick={() => openModal('Contact Support', 'Need help? We\'re here for you! Email us at: support@euskera-app.com or use the feedback form in the app. We typically respond within 24 hours. For technical issues, please include your device and browser information.')}
+              className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-3 px-6 rounded-lg transition-colors text-left"
+            >
               Contact Support
             </button>
             <button 
@@ -1262,6 +1378,12 @@ const EuskeraApp = () => {
   return (
     <div className="font-sans">
       {renderCurrentScreen()}
+      <Modal 
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        title={modalContent.title}
+        content={modalContent.content}
+      />
     </div>
   );
 };
