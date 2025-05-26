@@ -42,6 +42,12 @@ const EuskeraApp = () => {
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [authLoading, setAuthLoading] = useState(false);
+  const [friends, setFriends] = useState([
+    { id: 1, name: 'Maria Garcia', xp: 2150, streak: 12, avatar: '👩🏻', status: 'Learning Colors' },
+    { id: 2, name: 'Jon Smith', xp: 1890, streak: 8, avatar: '👨🏼', status: 'Completed Greetings' },
+    { id: 3, name: 'Anna Rodriguez', xp: 3200, streak: 20, avatar: '👩🏽', status: 'Learning Numbers' },
+    { id: 4, name: 'David Kim', xp: 980, streak: 5, avatar: '👨🏻', status: 'New Learner' }
+  ]);
 
   // Authentication state listener
   useEffect(() => {
@@ -533,7 +539,360 @@ const EuskeraApp = () => {
     );
   }
 
-  // Home Screen Component
+  // Friends Screen Component
+  const FriendsScreen = () => (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 pb-20">
+      {/* Header */}
+      <div className="bg-white shadow-sm border-b">
+        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-green-500 rounded-full flex items-center justify-center text-white font-bold text-lg">
+              E
+            </div>
+            <h1 className="text-2xl font-bold text-gray-800">Friends</h1>
+          </div>
+          
+          <div className="flex items-center space-x-6">
+            <div className="flex items-center space-x-2 text-yellow-600">
+              <Star className="w-5 h-5" />
+              <span className="font-bold">{xp} XP</span>
+            </div>
+            <button
+              onClick={handleSignOut}
+              className="text-gray-600 hover:text-gray-800 p-2"
+            >
+              <LogOut className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        {/* Leaderboard Header */}
+        <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">Weekly Leaderboard</h2>
+          <div className="flex items-center justify-between p-4 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg border border-yellow-200">
+            <div className="flex items-center space-x-3">
+              <div className="w-12 h-12 bg-yellow-500 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                {user?.displayName?.[0] || user?.email?.[0] || 'U'}
+              </div>
+              <div>
+                <div className="font-semibold text-gray-800">{user?.displayName || user?.email || 'You'}</div>
+                <div className="text-sm text-gray-600">{xp} XP • #{friends.filter(f => f.xp > xp).length + 1} place</div>
+              </div>
+            </div>
+            <div className="text-2xl">🏆</div>
+          </div>
+        </div>
+
+        {/* Friends List */}
+        <div className="bg-white rounded-xl shadow-lg p-6">
+          <h3 className="text-xl font-semibold text-gray-800 mb-4">Your Learning Community</h3>
+          <div className="space-y-4">
+            {friends.sort((a, b) => b.xp - a.xp).map((friend, index) => (
+              <div key={friend.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                <div className="flex items-center space-x-4">
+                  <div className="relative">
+                    <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-2xl">
+                      {friend.avatar}
+                    </div>
+                    <div className="absolute -top-1 -right-1 w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
+                      {index + 1}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="font-semibold text-gray-800">{friend.name}</div>
+                    <div className="text-sm text-gray-600">{friend.status}</div>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="font-bold text-blue-600">{friend.xp} XP</div>
+                  <div className="text-sm text-orange-600 flex items-center space-x-1">
+                    <Flame className="w-4 h-4" />
+                    <span>{friend.streak}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Invite Friends */}
+        <div className="bg-white rounded-xl shadow-lg p-6 mt-6">
+          <h3 className="text-xl font-semibold text-gray-800 mb-4">Invite Friends</h3>
+          <p className="text-gray-600 mb-4">Learning is more fun with friends! Invite them to join you on Euskera.</p>
+          <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-colors">
+            Share Euskera
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
+  // Achievements Screen Component  
+  const AchievementsScreen = () => (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 pb-20">
+      {/* Header */}
+      <div className="bg-white shadow-sm border-b">
+        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-green-500 rounded-full flex items-center justify-center text-white font-bold text-lg">
+              E
+            </div>
+            <h1 className="text-2xl font-bold text-gray-800">Achievements</h1>
+          </div>
+          
+          <div className="flex items-center space-x-6">
+            <div className="flex items-center space-x-2 text-yellow-600">
+              <Star className="w-5 h-5" />
+              <span className="font-bold">{xp} XP</span>
+            </div>
+            <button
+              onClick={handleSignOut}
+              className="text-gray-600 hover:text-gray-800 p-2"
+            >
+              <LogOut className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        {/* Stats Overview */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div className="bg-white rounded-xl shadow-lg p-6 text-center">
+            <div className="text-3xl font-bold text-blue-600">{Object.values(userProgress).filter(Boolean).length}</div>
+            <div className="text-gray-600 text-sm">Lessons</div>
+          </div>
+          <div className="bg-white rounded-xl shadow-lg p-6 text-center">
+            <div className="text-3xl font-bold text-orange-600">{streak}</div>
+            <div className="text-gray-600 text-sm">Day Streak</div>
+          </div>
+          <div className="bg-white rounded-xl shadow-lg p-6 text-center">
+            <div className="text-3xl font-bold text-yellow-600">{xp}</div>
+            <div className="text-gray-600 text-sm">Total XP</div>
+          </div>
+          <div className="bg-white rounded-xl shadow-lg p-6 text-center">
+            <div className="text-3xl font-bold text-green-600">{achievements.filter(a => a.unlocked).length}</div>
+            <div className="text-gray-600 text-sm">Achievements</div>
+          </div>
+        </div>
+
+        {/* Achievement Categories */}
+        <div className="space-y-6">
+          <div className="bg-white rounded-xl shadow-lg p-6">
+            <h3 className="text-xl font-semibold text-gray-800 mb-4">Learning Achievements</h3>
+            <div className="grid gap-4 md:grid-cols-2">
+              {achievements.map(achievement => (
+                <div key={achievement.id} className={`p-4 rounded-lg border-2 ${
+                  achievement.unlocked 
+                    ? 'border-yellow-300 bg-yellow-50' 
+                    : 'border-gray-200 bg-gray-50'
+                }`}>
+                  <div className="flex items-center space-x-3">
+                    <span className="text-3xl">{achievement.icon}</span>
+                    <div className="flex-1">
+                      <h4 className={`font-semibold ${achievement.unlocked ? 'text-yellow-800' : 'text-gray-500'}`}>
+                        {achievement.title}
+                      </h4>
+                      <p className={`text-sm ${achievement.unlocked ? 'text-yellow-700' : 'text-gray-400'}`}>
+                        {achievement.description}
+                      </p>
+                    </div>
+                    {achievement.unlocked && <Trophy className="w-6 h-6 text-yellow-600" />}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* More Achievement Categories */}
+          <div className="bg-white rounded-xl shadow-lg p-6">
+            <h3 className="text-xl font-semibold text-gray-800 mb-4">Social Achievements</h3>
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="p-4 rounded-lg border-2 border-gray-200 bg-gray-50">
+                <div className="flex items-center space-x-3">
+                  <span className="text-3xl">👥</span>
+                  <div className="flex-1">
+                    <h4 className="font-semibold text-gray-500">Social Butterfly</h4>
+                    <p className="text-sm text-gray-400">Add 5 friends</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="p-4 rounded-lg border-2 border-gray-200 bg-gray-50">
+                <div className="flex items-center space-x-3">
+                  <span className="text-3xl">🏆</span>
+                  <div className="flex-1">
+                    <h4 className="font-semibold text-gray-500">Top Performer</h4>
+                    <p className="text-sm text-gray-400">Reach #1 on leaderboard</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl shadow-lg p-6">
+            <h3 className="text-xl font-semibold text-gray-800 mb-4">Special Achievements</h3>
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="p-4 rounded-lg border-2 border-gray-200 bg-gray-50">
+                <div className="flex items-center space-x-3">
+                  <span className="text-3xl">🌟</span>
+                  <div className="flex-1">
+                    <h4 className="font-semibold text-gray-500">Night Owl</h4>
+                    <p className="text-sm text-gray-400">Complete lesson after 10 PM</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="p-4 rounded-lg border-2 border-gray-200 bg-gray-50">
+                <div className="flex items-center space-x-3">
+                  <span className="text-3xl">⚡</span>
+                  <div className="flex-1">
+                    <h4 className="font-semibold text-gray-500">Speed Demon</h4>
+                    <p className="text-sm text-gray-400">Complete lesson in under 2 minutes</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  // Settings Screen Component
+  const SettingsScreen = () => (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 pb-20">
+      {/* Header */}
+      <div className="bg-white shadow-sm border-b">
+        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-green-500 rounded-full flex items-center justify-center text-white font-bold text-lg">
+              E
+            </div>
+            <h1 className="text-2xl font-bold text-gray-800">Settings</h1>
+          </div>
+          
+          <button
+            onClick={handleSignOut}
+            className="text-gray-600 hover:text-gray-800 p-2"
+          >
+            <LogOut className="w-5 h-5" />
+          </button>
+        </div>
+      </div>
+
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        {/* Profile Section */}
+        <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
+          <h3 className="text-xl font-semibold text-gray-800 mb-4">Profile</h3>
+          <div className="flex items-center space-x-4 mb-4">
+            <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-green-500 rounded-full flex items-center justify-center text-white font-bold text-2xl">
+              {user?.displayName?.[0] || user?.email?.[0] || 'U'}
+            </div>
+            <div>
+              <div className="font-semibold text-gray-800 text-lg">{user?.displayName || 'Euskera Learner'}</div>
+              <div className="text-gray-600">{user?.email}</div>
+            </div>
+          </div>
+          <button className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-3 px-6 rounded-lg transition-colors">
+            Edit Profile
+          </button>
+        </div>
+
+        {/* Learning Settings */}
+        <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
+          <h3 className="text-xl font-semibold text-gray-800 mb-4">Learning Preferences</h3>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="font-medium text-gray-800">Daily Goal</div>
+                <div className="text-sm text-gray-600">XP to earn each day</div>
+              </div>
+              <select className="bg-gray-100 border border-gray-300 rounded-lg px-3 py-2">
+                <option>20 XP</option>
+                <option>50 XP</option>
+                <option>100 XP</option>
+              </select>
+            </div>
+            
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="font-medium text-gray-800">Sound Effects</div>
+                <div className="text-sm text-gray-600">Audio feedback for answers</div>
+              </div>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" className="sr-only peer" defaultChecked />
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+              </label>
+            </div>
+            
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="font-medium text-gray-800">Speaking Exercises</div>
+                <div className="text-sm text-gray-600">Practice pronunciation</div>
+              </div>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" className="sr-only peer" defaultChecked />
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        {/* Notifications */}
+        <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
+          <h3 className="text-xl font-semibold text-gray-800 mb-4">Notifications</h3>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="font-medium text-gray-800">Daily Reminder</div>
+                <div className="text-sm text-gray-600">Remind me to practice</div>
+              </div>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" className="sr-only peer" defaultChecked />
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+              </label>
+            </div>
+            
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="font-medium text-gray-800">Streak Freeze</div>
+                <div className="text-sm text-gray-600">Protect your streak</div>
+              </div>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" className="sr-only peer" />
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        {/* Account Actions */}
+        <div className="bg-white rounded-xl shadow-lg p-6">
+          <h3 className="text-xl font-semibold text-gray-800 mb-4">Account</h3>
+          <div className="space-y-3">
+            <button className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-3 px-6 rounded-lg transition-colors text-left">
+              Privacy Policy
+            </button>
+            <button className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-3 px-6 rounded-lg transition-colors text-left">
+              Terms of Service
+            </button>
+            <button className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-3 px-6 rounded-lg transition-colors text-left">
+              Contact Support
+            </button>
+            <button 
+              onClick={handleSignOut}
+              className="w-full bg-red-100 hover:bg-red-200 text-red-800 font-medium py-3 px-6 rounded-lg transition-colors"
+            >
+              Sign Out
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
   const HomeScreen = () => (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50">
       {/* Header */}
@@ -673,19 +1032,31 @@ const EuskeraApp = () => {
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg">
         <div className="max-w-4xl mx-auto px-4">
           <div className="flex justify-around py-3">
-            <button onClick={() => setCurrentScreen('home')} className="flex flex-col items-center space-y-1 text-blue-600">
+            <button 
+              onClick={() => setCurrentScreen('home')} 
+              className={`flex flex-col items-center space-y-1 ${currentScreen === 'home' ? 'text-blue-600' : 'text-gray-400'}`}
+            >
               <Home className="w-6 h-6" />
               <span className="text-xs font-medium">Home</span>
             </button>
-            <button className="flex flex-col items-center space-y-1 text-gray-400">
+            <button 
+              onClick={() => setCurrentScreen('friends')}
+              className={`flex flex-col items-center space-y-1 ${currentScreen === 'friends' ? 'text-blue-600' : 'text-gray-400'}`}
+            >
               <Users className="w-6 h-6" />
               <span className="text-xs font-medium">Friends</span>
             </button>
-            <button className="flex flex-col items-center space-y-1 text-gray-400">
+            <button 
+              onClick={() => setCurrentScreen('achievements')}
+              className={`flex flex-col items-center space-y-1 ${currentScreen === 'achievements' ? 'text-blue-600' : 'text-gray-400'}`}
+            >
               <Award className="w-6 h-6" />
               <span className="text-xs font-medium">Achievements</span>
             </button>
-            <button className="flex flex-col items-center space-y-1 text-gray-400">
+            <button 
+              onClick={() => setCurrentScreen('settings')}
+              className={`flex flex-col items-center space-y-1 ${currentScreen === 'settings' ? 'text-blue-600' : 'text-gray-400'}`}
+            >
               <Settings className="w-6 h-6" />
               <span className="text-xs font-medium">Settings</span>
             </button>
@@ -869,10 +1240,28 @@ const EuskeraApp = () => {
     );
   };
 
+  // Main App Render - Route to different screens
+  const renderCurrentScreen = () => {
+    switch (currentScreen) {
+      case 'home':
+        return <HomeScreen />;
+      case 'friends':
+        return <FriendsScreen />;
+      case 'achievements':
+        return <AchievementsScreen />;
+      case 'settings':
+        return <SettingsScreen />;
+      case 'lesson':
+        return <LessonScreen />;
+      default:
+        return <HomeScreen />;
+    }
+  };
+
   // Main App Render
   return (
     <div className="font-sans">
-      {currentScreen === 'home' ? <HomeScreen /> : <LessonScreen />}
+      {renderCurrentScreen()}
     </div>
   );
 };
