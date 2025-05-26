@@ -1460,28 +1460,63 @@ const EuskeraApp = () => {
     );
   };
 
-  // Main App Render - Route to different screens
+  // Main App Render - Simplified routing for debugging
   const renderCurrentScreen = () => {
-    switch (currentScreen) {
-      case 'home':
+    console.log('🔄 renderCurrentScreen called with:', currentScreen);
+    
+    try {
+      if (currentScreen === 'home') {
+        console.log('📱 Rendering HomeScreen');
         return <HomeScreen />;
-      case 'friends':
+      } else if (currentScreen === 'friends') {
+        console.log('👥 Rendering FriendsScreen');
         return <FriendsScreen />;
-      case 'achievements':
+      } else if (currentScreen === 'achievements') {
+        console.log('🏆 Rendering AchievementsScreen');
         return <AchievementsScreen />;
-      case 'settings':
+      } else if (currentScreen === 'settings') {
+        console.log('⚙️ Rendering SettingsScreen');
         return <SettingsScreen />;
-      case 'lesson':
+      } else if (currentScreen === 'lesson') {
+        console.log('📚 Rendering LessonScreen');
         return <LessonScreen />;
-      default:
+      } else {
+        console.log('❓ Unknown screen, defaulting to home');
         return <HomeScreen />;
+      }
+    } catch (error) {
+      console.error('💥 Error in renderCurrentScreen:', error);
+      return (
+        <div className="min-h-screen bg-red-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md mx-4">
+            <h2 className="text-xl font-bold text-red-600 mb-2">Rendering Error</h2>
+            <p className="text-gray-600 mb-4">Screen: {currentScreen}</p>
+            <p className="text-gray-600 mb-4">Error: {error.message}</p>
+            <button 
+              onClick={() => {
+                console.log('🔄 Resetting to home screen');
+                setCurrentScreen('home');
+              }}
+              className="bg-blue-600 text-white px-4 py-2 rounded w-full"
+            >
+              Back to Home
+            </button>
+          </div>
+        </div>
+      );
     }
   };
 
-  // Main App Render
+  // Main App Render with debugging
   return (
     <div className="font-sans">
+      {/* Debug indicator */}
+      <div className="fixed top-0 left-0 bg-black text-white px-2 py-1 text-xs z-50">
+        Screen: {currentScreen}
+      </div>
+      
       {renderCurrentScreen()}
+      
       <Modal 
         isOpen={showModal}
         onClose={() => setShowModal(false)}
