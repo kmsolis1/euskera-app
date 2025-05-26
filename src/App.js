@@ -39,6 +39,8 @@ const EuskeraApp = () => {
   const [userProgress, setUserProgress] = useState({});
   const [emailForSignIn, setEmailForSignIn] = useState('');
   const [emailSent, setEmailSent] = useState(false);
+  const [showEmailConfirm, setShowEmailConfirm] = useState(false);
+  const [confirmEmail, setConfirmEmail] = useState('');
 
   // Authentication state listener
   useEffect(() => {
@@ -54,7 +56,13 @@ const EuskeraApp = () => {
 
     // Check if user is signing in with email link
     if (isSignInWithEmailLink(auth, window.location.href)) {
-      handleEmailLinkSignIn();
+      const storedEmail = window.localStorage.getItem('emailForSignIn');
+      if (storedEmail) {
+        handleEmailLinkSignIn(storedEmail);
+      } else {
+        setShowEmailConfirm(true);
+        setLoading(false);
+      }
     }
 
     return () => unsubscribe();
@@ -122,7 +130,7 @@ const EuskeraApp = () => {
   // Email Link Sign In
   const sendEmailLink = async () => {
     const actionCodeSettings = {
-      url: window.location.href,
+      url: window.location.origin,
       handleCodeInApp: true,
     };
 
@@ -132,21 +140,33 @@ const EuskeraApp = () => {
       setEmailSent(true);
     } catch (error) {
       console.error('Error sending email link:', error);
+      alert('Error sending email link. Please try again.');
     }
   };
 
   // Handle email link sign in
-  const handleEmailLinkSignIn = async () => {
+  const handleEmailLinkSignIn = async (email) => {
     try {
-      let email = window.localStorage.getItem('emailForSignIn');
-      if (!email) {
-        email = window.prompt('Please provide your email for confirmation');
-      }
-      
+      setLoading(true);
       await signInWithEmailLink(auth, email, window.location.href);
       window.localStorage.removeItem('emailForSignIn');
+      // Clean up URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+      setShowEmailConfirm(false);
     } catch (error) {
       console.error('Error completing email link sign in:', error);
+      alert('Error signing in. Please try requesting a new magic link.');
+      setShowEmailConfirm(false);
+      window.history.replaceState({}, document.title, window.location.pathname);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Handle email confirmation for magic link
+  const handleEmailConfirmation = () => {
+    if (confirmEmail.trim()) {
+      handleEmailLinkSignIn(confirmEmail.trim());
     }
   };
 
@@ -393,6 +413,50 @@ const EuskeraApp = () => {
             E
           </div>
           <div className="text-xl text-gray-600">Loading Euskera...</div>
+        </div>
+      </div>
+    );
+  }
+
+  // Email confirmation screen for magic link
+  if (showEmailConfirm) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex items-center justify-center">
+        <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4">
+          <div className="text-center mb-8">
+            <div className="w-20 h-20 bg-gradient-to-r from-blue-500 to-green-500 rounded-full flex items-center justify-center text-white font-bold text-3xl mx-auto mb-4">
+              E
+            </div>
+            <h1 className="text-2xl font-bold text-gray-800 mb-2">Confirm Your Email</h1>
+            <p className="text-gray-600">Please enter your email address to complete sign-in</p>
+          </div>
+
+          <div className="space-y-4">
+            <input
+              type="email"
+              placeholder="Enter your email address"
+              value={confirmEmail}
+              onChange={(e) => setConfirmEmail(e.target.value)}
+              className="w-full border-2 border-gray-200 rounded-lg px-4 py-3 focus:border-blue-500 focus:outline-none"
+              autoFocus
+            />
+            <button
+              onClick={handleEmailConfirmation}
+              disabled={!confirmEmail.trim()}
+              className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white font-medium py-3 px-6 rounded-lg transition-colors"
+            >
+              Complete Sign In
+            </button>
+            <button
+              onClick={() => {
+                setShowEmailConfirm(false);
+                window.history.replaceState({}, document.title, window.location.pathname);
+              }}
+              className="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-3 px-6 rounded-lg transition-colors"
+            >
+              Cancel
+            </button>
+          </div>
         </div>
       </div>
     );
