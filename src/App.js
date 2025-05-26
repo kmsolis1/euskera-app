@@ -362,7 +362,305 @@ const EuskeraApp = () => {
             
             <div className="bg-gray-50 rounded-lg p-4 mb-6">
               <div className="flex justify-between items-center mb-2">
-                <span className="text-gray-600">XP Earned</span>
+                <span className="text-xs font-medium">Home</span>
+            </button>
+            <button 
+              onClick={() => setCurrentScreen('friends')}
+              className={`flex flex-col items-center space-y-1 ${currentScreen === 'friends' ? 'text-blue-600' : 'text-gray-400'}`}
+            >
+              <Users className="w-6 h-6" />
+              <span className="text-xs font-medium">Friends</span>
+            </button>
+            <button 
+              onClick={() => setCurrentScreen('achievements')}
+              className={`flex flex-col items-center space-y-1 ${currentScreen === 'achievements' ? 'text-blue-600' : 'text-gray-400'}`}
+            >
+              <Award className="w-6 h-6" />
+              <span className="text-xs font-medium">Achievements</span>
+            </button>
+            <button 
+              onClick={() => setCurrentScreen('settings')}
+              className={`flex flex-col items-center space-y-1 ${currentScreen === 'settings' ? 'text-blue-600' : 'text-gray-400'}`}
+            >
+              <Settings className="w-6 h-6" />
+              <span className="text-xs font-medium">Settings</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  const AchievementsScreen = () => (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 pb-20">
+      <div className="bg-white shadow-sm border-b">
+        <div className="max-w-4xl mx-auto px-4 py-4">
+          <div className="flex items-center space-x-4">
+            <button 
+              onClick={() => setCurrentScreen('home')}
+              className="w-10 h-10 bg-gradient-to-r from-blue-500 to-green-500 rounded-full flex items-center justify-center text-white font-bold text-lg"
+            >
+              E
+            </button>
+            <h1 className="text-2xl font-bold text-gray-800">Achievements</h1>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div className="bg-white rounded-xl shadow-lg p-6 text-center">
+            <div className="text-3xl font-bold text-blue-600">{Object.values(userProgress).filter(Boolean).length}</div>
+            <div className="text-gray-600 text-sm">Lessons</div>
+          </div>
+          <div className="bg-white rounded-xl shadow-lg p-6 text-center">
+            <div className="text-3xl font-bold text-orange-600">{streak}</div>
+            <div className="text-gray-600 text-sm">Day Streak</div>
+          </div>
+          <div className="bg-white rounded-xl shadow-lg p-6 text-center">
+            <div className="text-3xl font-bold text-yellow-600">{xp}</div>
+            <div className="text-gray-600 text-sm">Total XP</div>
+          </div>
+          <div className="bg-white rounded-xl shadow-lg p-6 text-center">
+            <div className="text-3xl font-bold text-green-600">2</div>
+            <div className="text-gray-600 text-sm">Achievements</div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl shadow-lg p-6">
+          <h3 className="text-xl font-semibold text-gray-800 mb-4">Your Achievements</h3>
+          <div className="space-y-4">
+            <div className="p-4 rounded-lg border-2 border-yellow-300 bg-yellow-50">
+              <div className="flex items-center space-x-3">
+                <span className="text-3xl">🎯</span>
+                <div className="flex-1">
+                  <h4 className="font-semibold text-yellow-800">First Steps</h4>
+                  <p className="text-sm text-yellow-700">Complete your first lesson</p>
+                </div>
+                <Trophy className="w-6 h-6 text-yellow-600" />
+              </div>
+            </div>
+
+            <div className="p-4 rounded-lg border-2 border-yellow-300 bg-yellow-50">
+              <div className="flex items-center space-x-3">
+                <span className="text-3xl">🔥</span>
+                <div className="flex-1">
+                  <h4 className="font-semibold text-yellow-800">Week Warrior</h4>
+                  <p className="text-sm text-yellow-700">Maintain a 7-day streak</p>
+                </div>
+                <Trophy className="w-6 h-6 text-yellow-600" />
+              </div>
+            </div>
+
+            <div className="p-4 rounded-lg border-2 border-gray-200 bg-gray-50">
+              <div className="flex items-center space-x-3">
+                <span className="text-3xl">📚</span>
+                <div className="flex-1">
+                  <h4 className="font-semibold text-gray-500">Scholar</h4>
+                  <p className="text-sm text-gray-400">Complete 5 lessons</p>
+                </div>
+                <Lock className="w-6 h-6 text-gray-400" />
+              </div>
+            </div>
+
+            <div className="p-4 rounded-lg border-2 border-gray-200 bg-gray-50">
+              <div className="flex items-center space-x-3">
+                <span className="text-3xl">⭐</span>
+                <div className="flex-1">
+                  <h4 className="font-semibold text-gray-500">Perfectionist</h4>
+                  <p className="text-sm text-gray-400">Complete a lesson with no mistakes</p>
+                </div>
+                <Lock className="w-6 h-6 text-gray-400" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg">
+        <div className="max-w-4xl mx-auto px-4">
+          <div className="flex justify-around py-3">
+            <button 
+              onClick={() => setCurrentScreen('home')} 
+              className={`flex flex-col items-center space-y-1 ${currentScreen === 'home' ? 'text-blue-600' : 'text-gray-400'}`}
+            >
+              <Home className="w-6 h-6" />
+              <span className="text-xs font-medium">Home</span>
+            </button>
+            <button 
+              onClick={() => setCurrentScreen('friends')}
+              className={`flex flex-col items-center space-y-1 ${currentScreen === 'friends' ? 'text-blue-600' : 'text-gray-400'}`}
+            >
+              <Users className="w-6 h-6" />
+              <span className="text-xs font-medium">Friends</span>
+            </button>
+            <button 
+              onClick={() => setCurrentScreen('achievements')}
+              className={`flex flex-col items-center space-y-1 ${currentScreen === 'achievements' ? 'text-blue-600' : 'text-gray-400'}`}
+            >
+              <Award className="w-6 h-6" />
+              <span className="text-xs font-medium">Achievements</span>
+            </button>
+            <button 
+              onClick={() => setCurrentScreen('settings')}
+              className={`flex flex-col items-center space-y-1 ${currentScreen === 'settings' ? 'text-blue-600' : 'text-gray-400'}`}
+            >
+              <Settings className="w-6 h-6" />
+              <span className="text-xs font-medium">Settings</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  const SettingsScreen = () => (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 pb-20">
+      <div className="bg-white shadow-sm border-b">
+        <div className="max-w-4xl mx-auto px-4 py-4">
+          <div className="flex items-center space-x-4">
+            <button 
+              onClick={() => setCurrentScreen('home')}
+              className="w-10 h-10 bg-gradient-to-r from-blue-500 to-green-500 rounded-full flex items-center justify-center text-white font-bold text-lg"
+            >
+              E
+            </button>
+            <h1 className="text-2xl font-bold text-gray-800">Settings</h1>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        {!isPremium && (
+          <div className="bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl shadow-lg p-6 mb-6 text-white">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-xl font-semibold mb-2">Upgrade to Euskera Plus</h3>
+                <p className="text-yellow-100">Unlock all lessons, unlimited hearts, and premium features!</p>
+              </div>
+              <Crown className="w-12 h-12 text-yellow-200" />
+            </div>
+            <button 
+              onClick={() => openModal('Upgrade to Premium', 'Euskera Plus Features:\n\n• All 8 lessons (including Business Basque)\n• Unlimited hearts\n• Offline mode\n• Priority support\n• Advanced grammar explanations\n\nOnly $9.99/month!')}
+              className="mt-4 bg-white text-orange-600 font-semibold py-2 px-6 rounded-lg hover:bg-yellow-50 transition-colors"
+            >
+              Upgrade Now
+            </button>
+          </div>
+        )}
+
+        <div className="bg-white rounded-xl shadow-lg p-6">
+          <h3 className="text-xl font-semibold text-gray-800 mb-4">App Settings</h3>
+          <div className="space-y-3">
+            <button 
+              onClick={() => openModal('Privacy Policy', 'At Euskera, we take your privacy seriously. We collect minimal data necessary to provide our language learning service. Your learning progress is stored securely and never shared with third parties. We use industry-standard encryption to protect your data. You can request deletion of your data at any time by contacting support.')}
+              className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 py-3 px-6 rounded-lg text-left transition-colors"
+            >
+              Privacy Policy
+            </button>
+            <button 
+              onClick={() => openModal('Terms of Service', 'By using Euskera, you agree to our terms. Our service is provided "as is" for educational purposes. You are responsible for maintaining the confidentiality of your account. We reserve the right to modify the service and these terms. Prohibited uses include sharing accounts or using the service for commercial purposes without permission.')}
+              className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 py-3 px-6 rounded-lg text-left transition-colors"
+            >
+              Terms of Service
+            </button>
+            <button 
+              onClick={() => openModal('Contact Support', 'Need help with Euskera? We are here to help!\n\n📧 Email us at: euskerasupport@gmail.com\n\nWe typically respond within 24-48 hours. For technical issues, please include:\n• Your device type (mobile/desktop)\n• Browser you are using\n• Description of the issue\n\nYou can also provide feedback through your app store reviews!')}
+              className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 py-3 px-6 rounded-lg text-left transition-colors"
+            >
+              Contact Support
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg">
+        <div className="max-w-4xl mx-auto px-4">
+          <div className="flex justify-around py-3">
+            <button 
+              onClick={() => setCurrentScreen('home')} 
+              className={`flex flex-col items-center space-y-1 ${currentScreen === 'home' ? 'text-blue-600' : 'text-gray-400'}`}
+            >
+              <Home className="w-6 h-6" />
+              <span className="text-xs font-medium">Home</span>
+            </button>
+            <button 
+              onClick={() => setCurrentScreen('friends')}
+              className={`flex flex-col items-center space-y-1 ${currentScreen === 'friends' ? 'text-blue-600' : 'text-gray-400'}`}
+            >
+              <Users className="w-6 h-6" />
+              <span className="text-xs font-medium">Friends</span>
+            </button>
+            <button 
+              onClick={() => setCurrentScreen('achievements')}
+              className={`flex flex-col items-center space-y-1 ${currentScreen === 'achievements' ? 'text-blue-600' : 'text-gray-400'}`}
+            >
+              <Award className="w-6 h-6" />
+              <span className="text-xs font-medium">Achievements</span>
+            </button>
+            <button 
+              onClick={() => setCurrentScreen('settings')}
+              className={`flex flex-col items-center space-y-1 ${currentScreen === 'settings' ? 'text-blue-600' : 'text-gray-400'}`}
+            >
+              <Settings className="w-6 h-6" />
+              <span className="text-xs font-medium">Settings</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  const Modal = ({ isOpen, onClose, title, content }) => {
+    if (!isOpen) return null;
+
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full max-h-[80vh] overflow-y-auto">
+          <div className="p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold text-gray-800">{title}</h2>
+              <button
+                onClick={onClose}
+                className="text-gray-600 hover:text-gray-800 text-2xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100"
+              >
+                ×
+              </button>
+            </div>
+            <div className="text-gray-600 leading-relaxed mb-6 whitespace-pre-line">
+              {content}
+            </div>
+            <button
+              onClick={onClose}
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-colors"
+            >
+              Got it
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div className="font-sans">
+      {currentScreen === 'home' && <HomeScreen />}
+      {currentScreen === 'friends' && <FriendsScreen />}
+      {currentScreen === 'achievements' && <AchievementsScreen />}
+      {currentScreen === 'settings' && <SettingsScreen />}
+      {currentScreen === 'lesson' && <LessonScreen />}
+      
+      <Modal 
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        title={modalContent.title}
+        content={modalContent.content}
+      />
+    </div>
+  );
+};
+
+export default EuskeraApp;gray-600">XP Earned</span>
                 <span className="font-bold text-yellow-600">+{lesson.xp}</span>
               </div>
               <div className="flex justify-between items-center">
@@ -668,300 +966,6 @@ const EuskeraApp = () => {
     </div>
   );
 
-  const AchievementsScreen = () => (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 pb-20">
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-4xl mx-auto px-4 py-4">
-          <div className="flex items-center space-x-4">
-            <button 
-              onClick={() => setCurrentScreen('home')}
-              className="w-10 h-10 bg-gradient-to-r from-blue-500 to-green-500 rounded-full flex items-center justify-center text-white font-bold text-lg"
-            >
-              E
-            </button>
-            <h1 className="text-2xl font-bold text-gray-800">Achievements</h1>
-          </div>
-        </div>
-      </div>
-
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white rounded-xl shadow-lg p-6 text-center">
-            <div className="text-3xl font-bold text-blue-600">{Object.values(userProgress).filter(Boolean).length}</div>
-            <div className="text-gray-600 text-sm">Lessons</div>
-          </div>
-          <div className="bg-white rounded-xl shadow-lg p-6 text-center">
-            <div className="text-3xl font-bold text-orange-600">{streak}</div>
-            <div className="text-gray-600 text-sm">Day Streak</div>
-          </div>
-          <div className="bg-white rounded-xl shadow-lg p-6 text-center">
-            <div className="text-3xl font-bold text-yellow-600">{xp}</div>
-            <div className="text-gray-600 text-sm">Total XP</div>
-          </div>
-          <div className="bg-white rounded-xl shadow-lg p-6 text-center">
-            <div className="text-3xl font-bold text-green-600">2</div>
-            <div className="text-gray-600 text-sm">Achievements</div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-xl shadow-lg p-6">
-          <h3 className="text-xl font-semibold text-gray-800 mb-4">Your Achievements</h3>
-          <div className="space-y-4">
-            <div className="p-4 rounded-lg border-2 border-yellow-300 bg-yellow-50">
-              <div className="flex items-center space-x-3">
-                <span className="text-3xl">🎯</span>
-                <div className="flex-1">
-                  <h4 className="font-semibold text-yellow-800">First Steps</h4>
-                  <p className="text-sm text-yellow-700">Complete your first lesson</p>
-                </div>
-                <Trophy className="w-6 h-6 text-yellow-600" />
-              </div>
-            </div>
-
-            <div className="p-4 rounded-lg border-2 border-yellow-300 bg-yellow-50">
-              <div className="flex items-center space-x-3">
-                <span className="text-3xl">🔥</span>
-                <div className="flex-1">
-                  <h4 className="font-semibold text-yellow-800">Week Warrior</h4>
-                  <p className="text-sm text-yellow-700">Maintain a 7-day streak</p>
-                </div>
-                <Trophy className="w-6 h-6 text-yellow-600" />
-              </div>
-            </div>
-
-            <div className="p-4 rounded-lg border-2 border-gray-200 bg-gray-50">
-              <div className="flex items-center space-x-3">
-                <span className="text-3xl">📚</span>
-                <div className="flex-1">
-                  <h4 className="font-semibold text-gray-500">Scholar</h4>
-                  <p className="text-sm text-gray-400">Complete 5 lessons</p>
-                </div>
-                <Lock className="w-6 h-6 text-gray-400" />
-              </div>
-            </div>
-
-            <div className="p-4 rounded-lg border-2 border-gray-200 bg-gray-50">
-              <div className="flex items-center space-x-3">
-                <span className="text-3xl">⭐</span>
-                <div className="flex-1">
-                  <h4 className="font-semibold text-gray-500">Perfectionist</h4>
-                  <p className="text-sm text-gray-400">Complete a lesson with no mistakes</p>
-                </div>
-                <Lock className="w-6 h-6 text-gray-400" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg">
-        <div className="max-w-4xl mx-auto px-4">
-          <div className="flex justify-around py-3">
-            <button 
-              onClick={() => setCurrentScreen('home')} 
-              className={`flex flex-col items-center space-y-1 ${currentScreen === 'home' ? 'text-blue-600' : 'text-gray-400'}`}
-            >
-              <Home className="w-6 h-6" />
-              <span className="text-xs font-medium">Home</span>
-            </button>
-            <button 
-              onClick={() => setCurrentScreen('friends')}
-              className={`flex flex-col items-center space-y-1 ${currentScreen === 'friends' ? 'text-blue-600' : 'text-gray-400'}`}
-            >
-              <Users className="w-6 h-6" />
-              <span className="text-xs font-medium">Friends</span>
-            </button>
-            <button 
-              onClick={() => setCurrentScreen('achievements')}
-              className={`flex flex-col items-center space-y-1 ${currentScreen === 'achievements' ? 'text-blue-600' : 'text-gray-400'}`}
-            >
-              <Award className="w-6 h-6" />
-              <span className="text-xs font-medium">Achievements</span>
-            </button>
-            <button 
-              onClick={() => setCurrentScreen('settings')}
-              className={`flex flex-col items-center space-y-1 ${currentScreen === 'settings' ? 'text-blue-600' : 'text-gray-400'}`}
-            >
-              <Settings className="w-6 h-6" />
-              <span className="text-xs font-medium">Settings</span>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
-  const SettingsScreen = () => (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 pb-20">
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-4xl mx-auto px-4 py-4">
-          <div className="flex items-center space-x-4">
-            <button 
-              onClick={() => setCurrentScreen('home')}
-              className="w-10 h-10 bg-gradient-to-r from-blue-500 to-green-500 rounded-full flex items-center justify-center text-white font-bold text-lg"
-            >
-              E
-            </button>
-            <h1 className="text-2xl font-bold text-gray-800">Settings</h1>
-          </div>
-        </div>
-      </div>
-
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        {!isPremium && (
-          <div className="bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl shadow-lg p-6 mb-6 text-white">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-xl font-semibold mb-2">Upgrade to Euskera Plus</h3>
-                <p className="text-yellow-100">Unlock all lessons, unlimited hearts, and premium features!</p>
-              </div>
-              <Crown className="w-12 h-12 text-yellow-200" />
-            </div>
-            <button 
-              onClick={() => openModal('Upgrade to Premium', 'Euskera Plus Features:\n\n• All 8 lessons (including Business Basque)\n• Unlimited hearts\n• Offline mode\n• Priority support\n• Advanced grammar explanations\n\nOnly $9.99/month!')}
-              className="mt-4 bg-white text-orange-600 font-semibold py-2 px-6 rounded-lg hover:bg-yellow-50 transition-colors"
-            >
-              Upgrade Now
-            </button>
-          </div>
-        )}
-
-        <div className="bg-white rounded-xl shadow-lg p-6">
-          <h3 className="text-xl font-semibold text-gray-800 mb-4">App Settings</h3>
-          <div className="space-y-3">
-            <button 
-              onClick={() => openModal('Privacy Policy', 'At Euskera, we take your privacy seriously. We collect minimal data necessary to provide our language learning service. Your learning progress is stored securely and never shared with third parties. We use industry-standard encryption to protect your data. You can request deletion of your data at any time by contacting support.')}
-              className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 py-3 px-6 rounded-lg text-left transition-colors"
-            >
-              Privacy Policy
-            </button>
-            <button 
-              onClick={() => openModal('Terms of Service', 'By using Euskera, you agree to our terms. Our service is provided "as is" for educational purposes. You are responsible for maintaining the confidentiality of your account. We reserve the right to modify the service and these terms. Prohibited uses include sharing accounts or using the service for commercial purposes without permission.')}
-              className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 py-3 px-6 rounded-lg text-left transition-colors"
-            >
-              Terms of Service
-            </button>
-            <button 
-              onClick={() => openModal('Contact Support', 'Need help with Euskera? We are here to help!\n\n📧 Email us at: euskerasupport@gmail.com\n\nWe typically respond within 24-48 hours. For technical issues, please include:\n• Your device type (mobile/desktop)\n• Browser you are using\n• Description of the issue\n\nYou can also provide feedback through your app store reviews!')}
-              className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 py-3 px-6 rounded-lg text-left transition-colors"
-            >
-              Contact Support
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg">
-        <div className="max-w-4xl mx-auto px-4">
-          <div className="flex justify-around py-3">
-            <button 
-              onClick={() => setCurrentScreen('home')} 
-              className={`flex flex-col items-center space-y-1 ${currentScreen === 'home' ? 'text-blue-600' : 'text-gray-400'}`}
-            >
-              <Home className="w-6 h-6" />
-              <span className="text-xs font-medium">Home</span>
-            </button>
-            <button 
-              onClick={() => setCurrentScreen('friends')}
-              className={`flex flex-col items-center space-y-1 ${currentScreen === 'friends' ? 'text-blue-600' : 'text-gray-400'}`}
-            >
-              <Users className="w-6 h-6" />
-              <span className="text-xs font-medium">Friends</span>
-            </button>
-            <button 
-              onClick={() => setCurrentScreen('achievements')}
-              className={`flex flex-col items-center space-y-1 ${currentScreen === 'achievements' ? 'text-blue-600' : 'text-gray-400'}`}
-            >
-              <Award className="w-6 h-6" />
-              <span className="text-xs font-medium">Achievements</span>
-            </button>
-            <button 
-              onClick={() => setCurrentScreen('settings')}
-              className={`flex flex-col items-center space-y-1 ${currentScreen === 'settings' ? 'text-blue-600' : 'text-gray-400'}`}
-            >
-              <Settings className="w-6 h-6" />
-              <span className="text-xs font-medium">Settings</span>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
-  const Modal = ({ isOpen, onClose, title, content }) => {
-    if (!isOpen) return null;
-
-    return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full max-h-[80vh] overflow-y-auto">
-          <div className="p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold text-gray-800">{title}</h2>
-              <button
-                onClick={onClose}
-                className="text-gray-600 hover:text-gray-800 text-2xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100"
-              >
-                ×
-              </button>
-            </div>
-            <div className="text-gray-600 leading-relaxed mb-6 whitespace-pre-line">
-              {content}
-            </div>
-            <button
-              onClick={onClose}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-colors"
-            >
-              Got it
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  return (
-    <div className="font-sans">
-      {currentScreen === 'home' && <HomeScreen />}
-      {currentScreen === 'friends' && <FriendsScreen />}
-      {currentScreen === 'achievements' && <AchievementsScreen />}
-      {currentScreen === 'settings' && <SettingsScreen />}
-      {currentScreen === 'lesson' && <LessonScreen />}
-      
-      <Modal 
-        isOpen={showModal}
-        onClose={() => setShowModal(false)}
-        title={modalContent.title}
-        content={modalContent.content}
-      />
-    </div>
-  );
-};
-
-export default EuskeraApp; flex-col items-center space-y-1 ${currentScreen === 'friends' ? 'text-blue-600' : 'text-gray-400'}`}
-            >
-              <Users className="w-6 h-6" />
-              <span className="text-xs font-medium">Friends</span>
-            </button>
-            <button 
-              onClick={() => setCurrentScreen('achievements')}
-              className={`flex flex-col items-center space-y-1 ${currentScreen === 'achievements' ? 'text-blue-600' : 'text-gray-400'}`}
-            >
-              <Award className="w-6 h-6" />
-              <span className="text-xs font-medium">Achievements</span>
-            </button>
-            <button 
-              onClick={() => setCurrentScreen('settings')}
-              className={`flex flex-col items-center space-y-1 ${currentScreen === 'settings' ? 'text-blue-600' : 'text-gray-400'}`}
-            >
-              <Settings className="w-6 h-6" />
-              <span className="text-xs font-medium">Settings</span>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
   const FriendsScreen = () => (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 pb-20">
       <div className="bg-white shadow-sm border-b">
@@ -1001,8 +1005,4 @@ export default EuskeraApp; flex-col items-center space-y-1 ${currentScreen === '
               className={`flex flex-col items-center space-y-1 ${currentScreen === 'home' ? 'text-blue-600' : 'text-gray-400'}`}
             >
               <Home className="w-6 h-6" />
-              <span className="text-xs font-medium">Home</span>
-            </button>
-            <button 
-              onClick={() => setCurrentScreen('friends')}
-              className={`flex
+              <span className="text-
