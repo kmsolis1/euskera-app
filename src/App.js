@@ -309,7 +309,7 @@ const EuskeraApp = () => {
       setXp(xp + 5);
     } else {
       setHearts(Math.max(0, hearts - 1));
-    }
+    };
     
     setTimeout(() => {
       if (currentQuestion < lessons[currentLesson].questions.length - 1) {
