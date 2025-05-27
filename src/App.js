@@ -46,95 +46,306 @@ const EuskeraApp = () => {
   const [showInterstitialAd, setShowInterstitialAd] = useState(false);
   const [lessonsCompletedToday, setLessonsCompletedToday] = useState(0);
 
-  // Lessons data
+  // Updated lessons with cultural focus
   const lessons = [
     {
       id: 1,
-      title: "Basic Greetings",
-      description: "Learn essential Basque greetings",
+      title: "Ateak Zabalduz (Opening Doors)",
+      description: "Discover the words your ancestors spoke",
       difficulty: "Beginner",
-      xp: 15,
+      xp: 20,
       isPremium: false,
-      category: "Basics",
+      category: "Etxe (Home) - Heritage Connection",
+      culturalInsight: "These phrases connect you to 1,000+ years of Basque tradition, spoken by your ancestors in the same mountains and valleys.",
       questions: [
         {
           type: "multiple-choice",
-          question: "How do you say 'Hello' in Basque?",
-          options: ["Kaixo", "Agur", "Eskerrik asko", "Mesedez"],
-          correct: "Kaixo",
-          translation: "Hello",
-          explanation: "Kaixo is the most common informal greeting in Basque."
+          question: "How do you say 'I am Basque' - a declaration of cultural identity?",
+          options: ["Ni euskalduna naiz", "Ni turistak naiz", "Ni amerikarra naiz", "Ni frantziarra naiz"],
+          correct: "Ni euskalduna naiz",
+          translation: "I am Basque",
+          explanation: "Euskaldun literally means 'one who has Euskera' - this is how Basques have identified themselves for centuries.",
+          culturalNote: "🏔️ Heritage Connection: Your ancestors used this exact phrase to identify themselves as keepers of Europe's oldest language."
         },
         {
           type: "translation",
-          question: "What does 'Egun on' mean in English?",
-          basque: "Egun on",
-          options: ["Good morning", "Good night", "Thank you", "Please"],
-          correct: "Good morning",
-          translation: "Good morning",
-          explanation: "Egun on literally means 'good day' and is used as a morning greeting."
+          question: "What does this heritage phrase mean?",
+          basque: "Nire arbasoak hemengo ziren",
+          options: ["My ancestors were from here", "My family is traveling", "I am learning Basque", "This is my homeland"],
+          correct: "My ancestors were from here",
+          translation: "My ancestors were from here",
+          explanation: "A powerful phrase connecting you to your Basque roots and ancestral homeland.",
+          culturalNote: "🌊 Use This: Perfect for when visiting the village your family came from."
         },
         {
           type: "multiple-choice",
-          question: "How do you say 'Thank you very much' in Basque?",
-          options: ["Kaixo", "Agur", "Eskerrik asko", "Barkatu"],
-          correct: "Eskerrik asko",
-          translation: "Thank you very much",
-          explanation: "Eskerrik asko means 'thank you very much'."
+          question: "How do you introduce yourself with your Basque name heritage?",
+          options: ["Nire izena... da", "Nik nahi dut", "Hori zer da", "Non nago"],
+          correct: "Nire izena... da",
+          translation: "My name is...",
+          explanation: "Many Basque surnames carry deep meaning - connecting to places, occupations, or characteristics of your ancestors.",
+          culturalNote: "📚 Did you know? Basque surnames often tell the story of where your family lived: 'Etxeberria' means 'new house', 'Mendizabal' means 'wide mountain'."
         },
         {
           type: "translation",
-          question: "What does 'Agur' mean in English?",
-          basque: "Agur",
-          options: ["Hello", "Goodbye", "Please", "Sorry"],
-          correct: "Goodbye",
-          translation: "Goodbye",
-          explanation: "Agur is used when leaving or saying farewell."
+          question: "This question helps trace your family origins:",
+          basque: "Nire familia... etorri zen",
+          options: ["My family came from...", "My family lives in...", "My family works in...", "My family speaks..."],
+          correct: "My family came from...",
+          translation: "My family came from...",
+          explanation: "Essential for genealogy research and connecting with local families who may share your ancestry.",
+          culturalNote: "🏠 Heritage Tip: Many Basque villages maintain detailed family records going back centuries."
         }
       ]
     },
     {
       id: 2,
-      title: "Numbers 1-10",
-      description: "Count from one to ten in Basque",
+      title: "Familia Zuhaitza (Family Tree)",
+      description: "Learn family terms through ancestral connections",
       difficulty: "Beginner",
-      xp: 20,
+      xp: 25,
       isPremium: false,
-      category: "Basics",
+      category: "Etxe (Home) - Heritage Connection",
+      culturalInsight: "Basque family structures were unique in Europe - inheritance through both male and female lines, with deep respect for elders.",
       questions: [
         {
           type: "multiple-choice",
-          question: "What is 'bat' in English?",
-          basque: "bat",
-          options: ["One", "Two", "Three", "Four"],
-          correct: "One",
-          translation: "One",
-          explanation: "Bat is the number one in Basque."
-        },
-        {
-          type: "multiple-choice",
-          question: "How do you say 'Three' in Basque?",
-          options: ["bi", "hiru", "lau", "bost"],
-          correct: "hiru",
-          translation: "Three",
-          explanation: "Hiru is the Basque word for three."
+          question: "How do you say 'grandfather' - the keeper of family stories?",
+          basque: "aitona",
+          options: ["aitona", "amona", "osaba", "anaia"],
+          correct: "aitona",
+          translation: "Grandfather",
+          explanation: "Aitona literally means 'big father' - traditionally the storyteller and keeper of family history.",
+          culturalNote: "👴 Cultural Role: Basque grandfathers traditionally passed down oral histories, legends, and family traditions."
         },
         {
           type: "translation",
-          question: "What number is 'hamar'?",
-          basque: "hamar",
-          options: ["Eight", "Nine", "Ten", "Seven"],
-          correct: "Ten",
-          translation: "Ten",
-          explanation: "Hamar is ten in Basque."
+          question: "Who was the heart of the traditional Basque household?",
+          basque: "amona",
+          options: ["Grandmother", "Mother", "Aunt", "Sister"],
+          correct: "Grandmother",
+          translation: "Grandmother",
+          explanation: "Amona means 'big mother' - often the matriarch who maintained cultural traditions and recipes.",
+          culturalNote: "👵 Heritage Wisdom: Basque grandmothers were keepers of recipes, folk medicine, and cultural practices passed down through generations."
         },
         {
           type: "multiple-choice",
-          question: "How do you say 'Five' in Basque?",
-          options: ["lau", "bost", "sei", "zazpi"],
-          correct: "bost",
-          translation: "Five",
-          explanation: "Bost means five in Basque."
+          question: "In traditional Basque culture, which family member often inherited the family farm?",
+          options: ["The eldest child (regardless of gender)", "Only the eldest son", "Only the youngest", "Only daughters"],
+          correct: "The eldest child (regardless of gender)",
+          translation: "The eldest child",
+          explanation: "Basque inheritance law was unique in medieval Europe - the 'etxekojaun/etxekoandre' (house lord/lady) could be male or female.",
+          culturalNote: "⚖️ Progressive Culture: Basque women had inheritance and property rights centuries before most European cultures."
+        },
+        {
+          type: "translation",
+          question: "What does this phrase about family heritage mean?",
+          basque: "Zein herritatik?",
+          options: ["From which town?", "What family name?", "How many siblings?", "What profession?"],
+          correct: "From which town?",
+          translation: "From which town?",
+          explanation: "Essential question for tracing Basque ancestry - most families are identified by their village of origin.",
+          culturalNote: "🗺️ Genealogy Key: Basque identity is deeply tied to specific villages and valleys - this question opens family history doors."
+        }
+      ]
+    },
+    {
+      id: 3,
+      title: "Turista Baino Gehiago (More Than a Tourist)",
+      description: "Navigate the Basque Country like a cultural insider",
+      difficulty: "Beginner",
+      xp: 30,
+      isPremium: false,
+      category: "Bidaiak (Journeys) - Cultural Tourism",
+      culturalInsight: "When you speak Euskera, locals know you're genuinely interested in their culture, not just passing through.",
+      questions: [
+        {
+          type: "multiple-choice",
+          question: "How do you show cultural respect by expressing desire to learn?",
+          options: ["Euskera ikasi nahi dut", "English hitz egin", "Turista naiz", "Diru nahi dut"],
+          correct: "Euskera ikasi nahi dut",
+          translation: "I want to learn Basque",
+          explanation: "This phrase immediately signals to locals that you respect their culture and want genuine connection.",
+          culturalNote: "🤝 Cultural Bridge: Saying this opens doors - locals often become enthusiastic teachers and cultural guides."
+        },
+        {
+          type: "translation",
+          question: "How do you express genuine cultural curiosity?",
+          basque: "Kultura ezagutu nahi dut",
+          options: ["I want to know the culture", "I want to buy souvenirs", "I want to take photos", "I want to eat food"],
+          correct: "I want to know the culture",
+          translation: "I want to know the culture",
+          explanation: "Goes beyond surface tourism to show you want to understand the deeper meaning behind Basque traditions.",
+          culturalNote: "🎭 Cultural Immersion: This phrase often leads to invitations to local festivals, family gatherings, or cultural explanations."
+        },
+        {
+          type: "multiple-choice",
+          question: "What's the respectful way to ask about local Basque heritage sites?",
+          options: ["Non daude euskal lekuak?", "Tourist information?", "Where McDonald's?", "Hablo español"],
+          correct: "Non daude euskal lekuak?",
+          translation: "Where are the Basque places?",
+          explanation: "Shows you're seeking authentic Basque culture, not generic tourist attractions.",
+          culturalNote: "🏛️ Hidden Gems: Locals will direct you to ancient stone circles, traditional cider houses, and family-run restaurants tourists never find."
+        },
+        {
+          type: "translation",
+          question: "This genealogy question connects you with locals:",
+          basque: "Non jaio zen nire aitona?",
+          options: ["Where was my grandfather born?", "When did grandfather die?", "What did grandfather do?", "How old was grandfather?"],
+          correct: "Where was my grandfather born?",
+          translation: "Where was my grandfather born?",
+          explanation: "Basques take great pride in helping diaspora descendants trace their family origins.",
+          culturalNote: "🔍 Family Detective: This question often leads to introductions with local historians, genealogists, or distant relatives still in the area."
+        }
+      ]
+    },
+    {
+      id: 4,
+      title: "Pintxo Kultura (Pintxo Culture)",
+      description: "Experience Basque social dining culture authentically",
+      difficulty: "Intermediate",
+      xp: 35,
+      isPremium: true,
+      category: "Bidaiak (Journeys) - Cultural Tourism",
+      culturalInsight: "Pintxo culture isn't just about food - it's about community, conversation, and maintaining social bonds that define Basque society.",
+      questions: [
+        {
+          type: "multiple-choice",
+          question: "How do you respectfully ask for the local's favorite pintxo?",
+          options: ["Zer gomendatzen duzu?", "Cheap food please", "Tourist menu?", "English menu?"],
+          correct: "Zer gomendatzen duzu?",
+          translation: "What do you recommend?",
+          explanation: "Shows respect for local expertise and opens conversation about regional specialties and family recipes.",
+          culturalNote: "👨‍🍳 Cultural Exchange: Bartenders often share stories about their grandmother's recipes or explain the history behind traditional pintxos."
+        },
+        {
+          type: "translation",
+          question: "How do you participate in the social aspect of pintxo culture?",
+          basque: "Txikito bat, mesedez",
+          options: ["A small glass, please", "Large beer, please", "Water bottle, please", "Coffee cup, please"],
+          correct: "A small glass, please",
+          translation: "A small glass, please",
+          explanation: "Txikito (small glass of wine) is central to pintxo culture - meant for sipping while socializing, not drinking quickly.",
+          culturalNote: "🍷 Social Ritual: The txikito encourages slow, social drinking that builds community connections over hours of conversation."
+        },
+        {
+          type: "multiple-choice",
+          question: "What's the traditional way to show appreciation for exceptional food?",
+          options: ["Oso goxoa!", "Very expensive!", "Too spicy!", "More sauce!"],
+          correct: "Oso goxoa!",
+          translation: "Very delicious!",
+          explanation: "Goxoa is a warm, appreciative term that acknowledges the cook's skill and cultural heritage.",
+          culturalNote: "😋 Cultural Compliment: This phrase often leads to chefs explaining cooking techniques or family recipe origins."
+        },
+        {
+          type: "translation",
+          question: "How do you ask about traditional preparation methods?",
+          basque: "Nola egiten da?",
+          options: ["How is it made?", "Where is it from?", "When do you serve it?", "Why is it popular?"],
+          correct: "How is it made?",
+          translation: "How is it made?",
+          explanation: "Shows genuine interest in preserving and understanding traditional Basque cooking methods.",
+          culturalNote: "👩‍🍳 Recipe Exchange: Often leads to detailed explanations about traditional techniques, seasonal ingredients, or family variations."
+        }
+      ]
+    },
+    {
+      id: 5,
+      title: "Euskera, Hizkuntza Zaharra (The Ancient Language)",
+      description: "Understand what makes Basque culture unique in Europe",
+      difficulty: "Intermediate",
+      xp: 40,
+      isPremium: true,
+      category: "Ondarea (Heritage) - Deep Cultural Connection",
+      culturalInsight: "Euskera is Europe's oldest language - unrelated to any other known language, spoken here before Romans, Celts, or Germanic tribes arrived.",
+      questions: [
+        {
+          type: "multiple-choice",
+          question: "How do you express pride in learning this ancient language?",
+          options: ["Euskera zaharren hizkuntza da", "Spanish is easier", "French is better", "English is global"],
+          correct: "Euskera zaharren hizkuntza da",
+          translation: "Basque is the oldest language",
+          explanation: "Acknowledges the unique historical significance of Euskera as a pre-Indo-European language.",
+          culturalNote: "🏛️ Ancient Heritage: When Romans arrived 2,000 years ago, they found Basques already speaking this language - unchanged in its core structure."
+        },
+        {
+          type: "translation",
+          question: "How do you show respect for cultural preservation efforts?",
+          basque: "Kultura mantendu behar dugu",
+          options: ["We must maintain culture", "Culture is changing", "Modern is better", "Old ways are gone"],
+          correct: "We must maintain culture",
+          translation: "We must maintain culture",
+          explanation: "Expresses solidarity with ongoing efforts to preserve and revitalize Basque language and traditions.",
+          culturalNote: "🛡️ Cultural Guardian: This phrase shows you understand your role in helping preserve this unique European heritage."
+        },
+        {
+          type: "multiple-choice",
+          question: "What makes Euskera scientifically fascinating to linguists?",
+          options: ["Hizkuntza isolatua da", "Easy to learn", "Similar to Spanish", "New language"],
+          correct: "Hizkuntza isolatua da",
+          translation: "It's an isolated language",
+          explanation: "Euskera has no known linguistic relatives - a unique survival from pre-historic Europe.",
+          culturalNote: "🔬 Scientific Marvel: Linguists study Euskera to understand what European languages were like before Indo-European expansion."
+        },
+        {
+          type: "translation",
+          question: "How do you express connection to this ancient heritage?",
+          basque: "Nire ondarea da",
+          options: ["It is my heritage", "It is too difficult", "It is not important", "It is just old"],
+          correct: "It is my heritage",
+          translation: "It is my heritage",
+          explanation: "Personal claim to cultural inheritance and responsibility for preservation.",
+          culturalNote: "🌳 Living Heritage: This phrase connects you to an unbroken chain of speakers stretching back thousands of years."
+        }
+      ]
+    },
+    {
+      id: 6,
+      title: "Herritar Izatea (Being a Community Member)",
+      description: "Understanding Basque values and community identity",
+      difficulty: "Intermediate",
+      xp: 45,
+      isPremium: true,
+      category: "Ondarea (Heritage) - Deep Cultural Connection",
+      culturalInsight: "Basque society is built on concepts of mutual aid, collective identity, and deep connection to place - values that shaped unique democratic traditions.",
+      questions: [
+        {
+          type: "multiple-choice",
+          question: "How do you express the core Basque concept of collective identity?",
+          options: ["Euskal Herria gure etxea da", "I am individual", "Competition is key", "Money matters most"],
+          correct: "Euskal Herria gure etxea da",
+          translation: "The Basque Country is our home",
+          explanation: "Euskal Herria (the Basque Country) represents collective identity transcending political borders.",
+          culturalNote: "🏠 Collective Identity: This concept unites Basques across France and Spain, emphasizing shared culture over political divisions."
+        },
+        {
+          type: "translation",
+          question: "What traditional value emphasizes community cooperation?",
+          basque: "Auzolan egiten dugu",
+          options: ["We do community work", "We work alone", "We compete always", "We avoid others"],
+          correct: "We do community work",
+          translation: "We do community work",
+          explanation: "Auzolan is the traditional practice of neighbors working together for community benefit.",
+          culturalNote: "🤝 Traditional Democracy: Auzolan represents ancient Basque democratic values - collective decision-making and mutual aid."
+        },
+        {
+          type: "multiple-choice",
+          question: "How do you show respect for Basque democratic traditions?",
+          options: ["Guztiak parte hartu behar dugu", "Leaders decide everything", "Only experts know", "Democracy is new"],
+          correct: "Guztiak parte hartu behar dugu",
+          translation: "Everyone must participate",
+          explanation: "Reflects traditional Basque assemblies where community decisions required broad participation.",
+          culturalNote: "🗳️ Ancient Democracy: Basque communities practiced participatory democracy centuries before it became widespread in Europe."
+        },
+        {
+          type: "translation",
+          question: "How do you express commitment to preserving cultural practices?",
+          basque: "Ohiturak gorde behar ditugu",
+          options: ["We must preserve customs", "Customs are outdated", "Change everything now", "Forget the past"],
+          correct: "We must preserve customs",
+          translation: "We must preserve customs",
+          explanation: "Shows understanding that cultural survival depends on active preservation efforts.",
+          culturalNote: "🎭 Living Culture: Basque festivals, sports, and traditions survive because each generation commits to passing them forward."
         }
       ]
     }
@@ -292,7 +503,7 @@ const EuskeraApp = () => {
             </div>
             <div>
               <h1 className="text-2xl font-bold text-gray-800">Euskera</h1>
-              <p className="text-sm text-gray-600">Welcome back!</p>
+              <p className="text-sm text-gray-600">Connect with your Basque heritage</p>
             </div>
           </div>
           
@@ -326,32 +537,50 @@ const EuskeraApp = () => {
         <div className="bg-gradient-to-r from-blue-500 to-green-500 rounded-2xl shadow-xl p-6 mb-8 text-white">
           <h3 className="text-xl font-semibold mb-4 flex items-center">
             <Zap className="w-6 h-6 mr-2" />
-            Your Progress
+            Your Cultural Journey
           </h3>
           <div className="grid grid-cols-3 gap-6">
             <div className="text-center">
               <div className="text-3xl font-bold mb-1">{Object.values(userProgress).filter(Boolean).length}</div>
-              <div className="text-blue-100">Lessons Completed</div>
+              <div className="text-blue-100">Cultural Lessons</div>
             </div>
             <div className="text-center">
               <div className="text-3xl font-bold mb-1">{streak}</div>
-              <div className="text-blue-100">Day Streak</div>
+              <div className="text-blue-100">Days Connected</div>
             </div>
             <div className="text-center">
               <div className="text-3xl font-bold mb-1">{xp}</div>
-              <div className="text-blue-100">Total XP</div>
+              <div className="text-blue-100">Heritage Points</div>
             </div>
           </div>
         </div>
 
         {Object.entries(groupedLessons).map(([category, categoryLessons]) => (
           <div key={category} className="mb-8">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center">
-              {category}
-              {category !== 'Basics' && (
-                <Crown className="w-6 h-6 text-yellow-500 ml-2" />
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-gray-800 flex items-center">
+                {category}
+                {category.includes('Heritage') && (
+                  <div className="ml-2 text-amber-600">🏛️</div>
+                )}
+                {category.includes('Tourism') && (
+                  <div className="ml-2 text-blue-600">🗺️</div>
+                )}
+                {category.includes('Home') && (
+                  <div className="ml-2 text-green-600">🏠</div>
+                )}
+              </h2>
+              {category.includes('Heritage') && (
+                <div className="text-sm text-gray-600 italic">
+                  "Connect with your ancestors"
+                </div>
               )}
-            </h2>
+              {category.includes('Tourism') && (
+                <div className="text-sm text-gray-600 italic">
+                  "Experience like a local"
+                </div>
+              )}
+            </div>
             
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {categoryLessons.map((lesson) => {
@@ -360,12 +589,19 @@ const EuskeraApp = () => {
                 const isCompleted = userProgress[lesson.id];
                 
                 return (
-                  <div key={lesson.id} className={`bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 ${isLocked ? 'opacity-75' : 'hover:-translate-y-1'}`}>
+                  <div key={lesson.id} className={`bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 ${isLocked ? 'opacity-75' : 'hover:-translate-y-1'} border-l-4 ${
+                    lesson.category.includes('Heritage') ? 'border-amber-500' :
+                    lesson.category.includes('Tourism') ? 'border-blue-500' :
+                    lesson.category.includes('Home') ? 'border-green-500' : 'border-gray-300'
+                  }`}>
                     <div className="p-6">
                       <div className="flex items-center justify-between mb-4">
                         <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
                           isCompleted ? 'bg-green-100 text-green-600' : 
-                          isLocked ? 'bg-gray-100 text-gray-400' : 'bg-blue-100 text-blue-600'
+                          isLocked ? 'bg-gray-100 text-gray-400' : 
+                          lesson.category.includes('Heritage') ? 'bg-amber-100 text-amber-600' :
+                          lesson.category.includes('Tourism') ? 'bg-blue-100 text-blue-600' :
+                          'bg-green-100 text-green-600'
                         }`}>
                           {isLocked ? <Lock className="w-6 h-6" /> : 
                            isCompleted ? <CheckCircle className="w-6 h-6" /> : <Book className="w-6 h-6" />}
@@ -400,10 +636,14 @@ const EuskeraApp = () => {
                               ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                               : isCompleted 
                               ? 'bg-green-600 hover:bg-green-700 text-white hover:scale-105' 
-                              : 'bg-blue-600 hover:bg-blue-700 text-white hover:scale-105'
+                              : lesson.category.includes('Heritage') 
+                              ? 'bg-amber-600 hover:bg-amber-700 text-white hover:scale-105'
+                              : lesson.category.includes('Tourism')
+                              ? 'bg-blue-600 hover:bg-blue-700 text-white hover:scale-105'
+                              : 'bg-green-600 hover:bg-green-700 text-white hover:scale-105'
                           }`}
                         >
-                          {isLocked ? 'Premium' : (isCompleted ? 'Review' : 'Start')}
+                          {isLocked ? 'Premium' : (isCompleted ? 'Review' : 'Begin Journey')}
                         </button>
                       </div>
                     </div>
@@ -414,23 +654,24 @@ const EuskeraApp = () => {
           </div>
         ))}
 
-        {/* Banner Ad for Non-Premium */}
+        {/* Cultural Banner Ad */}
         {!isPremium && (
           <div className="mb-8">
-            <div className="bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
-              <p className="text-sm text-gray-500 mb-2">Advertisement</p>
+            <div className="bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-dashed border-amber-300 rounded-lg p-6 text-center">
+              <div className="text-2xl mb-2">🏔️</div>
+              <p className="text-sm text-amber-600 mb-2">Sponsored Content</p>
               <div className="bg-gradient-to-r from-blue-100 to-green-100 rounded p-6">
-                <h4 className="font-semibold text-gray-700 mb-2">Learn Spanish Next!</h4>
-                <p className="text-sm text-gray-600 mb-3">Master multiple languages with our partner app</p>
+                <h4 className="font-semibold text-gray-700 mb-2">Visit the Basque Country</h4>
+                <p className="text-sm text-gray-600 mb-3">Experience the culture you're learning firsthand</p>
                 <button className="bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700 transition-colors">
-                  Try SpanishPro Free
+                  Plan Your Heritage Journey
                 </button>
               </div>
               <button 
-                onClick={() => openModal('Remove Ads', 'Tired of ads? Upgrade to Premium!\n\n✨ No advertisements\n🔥 Unlimited hearts\n📚 All lessons unlocked')}
-                className="text-xs text-blue-600 hover:underline mt-2"
+                onClick={() => openModal('Remove Ads', 'Focus on your cultural learning journey without distractions!\n\n✨ Ad-free experience\n🏛️ Premium heritage content\n🗺️ Advanced cultural insights\n\nUpgrade to Premium for $9.99/month')}
+                className="text-xs text-amber-600 hover:underline mt-2"
               >
-                Remove ads
+                Remove ads • Focus on heritage
               </button>
             </div>
           </div>
@@ -441,15 +682,15 @@ const EuskeraApp = () => {
     </div>
   );
 
-  // Hearts depleted screen
+  // Hearts depleted screen with cultural messaging
   const HeartsDepletedScreen = () => (
     <div className="min-h-screen bg-gradient-to-br from-red-50 to-pink-50 flex items-center justify-center">
       <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4 text-center">
         <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
           <Heart className="w-10 h-10 text-red-600" />
         </div>
-        <h2 className="text-2xl font-bold text-gray-800 mb-2">Out of Hearts!</h2>
-        <p className="text-gray-600 mb-6">You've run out of hearts. Watch an ad to get more hearts or upgrade to premium for unlimited hearts.</p>
+        <h2 className="text-2xl font-bold text-gray-800 mb-2">Cultural Journey Paused</h2>
+        <p className="text-gray-600 mb-6">Even the best learners need breaks! Continue your heritage connection by watching an ad or upgrading to premium.</p>
         
         <div className="space-y-3 mb-6">
           <button
@@ -457,15 +698,15 @@ const EuskeraApp = () => {
             className="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white py-3 px-6 rounded-lg font-medium hover:shadow-lg transition-all duration-200 flex items-center justify-center space-x-2"
           >
             <span>📺</span>
-            <span>Watch Ad - Get Full Hearts</span>
+            <span>Watch Ad - Continue Learning Heritage</span>
           </button>
           
           <button
-            onClick={() => openModal('Upgrade to Premium', 'Get unlimited hearts and remove all ads!\n\n💖 Unlimited hearts\n✨ No advertisements\n📚 All lessons unlocked\n\nUpgrade now for $9.99/month')}
-            className="w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-white py-3 px-6 rounded-lg font-medium hover:shadow-lg transition-all duration-200 flex items-center justify-center space-x-2"
+            onClick={() => openModal('Unlimited Cultural Learning', 'Continue your heritage journey without interruption!\n\n💖 Unlimited hearts\n🏛️ Premium cultural insights\n🗺️ Advanced heritage content\n✨ Ad-free experience\n\nUpgrade now for $9.99/month')}
+            className="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white py-3 px-6 rounded-lg font-medium hover:shadow-lg transition-all duration-200 flex items-center justify-center space-x-2"
           >
             <Crown className="w-5 h-5" />
-            <span>Get Premium - Unlimited Hearts</span>
+            <span>Unlimited Heritage Learning</span>
           </button>
         </div>
         
@@ -633,11 +874,24 @@ const EuskeraApp = () => {
                 </div>
               </div>
               
+              {/* Cultural Insight for lesson start */}
+              {currentQuestion === 0 && lesson.culturalInsight && (
+                <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-lg p-4 mb-4">
+                  <div className="flex items-start space-x-3">
+                    <div className="text-2xl">💡</div>
+                    <div>
+                      <h4 className="font-semibold text-amber-800 mb-1">Cultural Insight</h4>
+                      <p className="text-sm text-amber-700">{lesson.culturalInsight}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+              
               {question.basque && (
                 <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 mb-4 border border-blue-100">
                   <div className="text-center">
                     <div className="text-3xl font-bold text-blue-800 mb-2">{question.basque}</div>
-                    <div className="text-sm text-blue-600 uppercase tracking-wide">Basque</div>
+                    <div className="text-sm text-blue-600 uppercase tracking-wide">Euskera - Europe's Oldest Language</div>
                   </div>
                 </div>
               )}
@@ -706,8 +960,20 @@ const EuskeraApp = () => {
                       )}
                     </div>
                     {question.explanation && (
-                      <div className={`text-sm ${isCorrect ? 'text-green-600' : 'text-red-600'}`}>
+                      <div className={`text-sm mb-3 ${isCorrect ? 'text-green-600' : 'text-red-600'}`}>
                         💡 {question.explanation}
+                      </div>
+                    )}
+                    {question.culturalNote && (
+                      <div className={`text-sm p-3 rounded-lg ${
+                        isCorrect ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'
+                      }`}>
+                        <div className={`font-medium mb-1 ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>
+                          Cultural Connection
+                        </div>
+                        <div className={`text-xs ${isCorrect ? 'text-green-600' : 'text-red-600'}`}>
+                          {question.culturalNote}
+                        </div>
                       </div>
                     )}
                   </div>
