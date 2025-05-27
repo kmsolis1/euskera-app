@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Home, Users, Award, Settings, Star, Heart, Flame, Book, CheckCircle, XCircle, Trophy, Crown, Lock, Play, Target, Zap, Sparkles } from 'lucide-react';
+import { Home, Users, Award, Settings, Star, Heart, Flame, Book, CheckCircle, XCircle, Trophy, Crown, Lock, Target, Zap, Sparkles, User, Calendar, Clock, TrendingUp, Edit3 } from 'lucide-react';
 
 const EuskeraApp = () => {
   const [currentScreen, setCurrentScreen] = useState('home');
@@ -12,13 +12,30 @@ const EuskeraApp = () => {
   const [lessonComplete, setLessonComplete] = useState(false);
   const [hearts, setHearts] = useState(5);
   const [xp, setXp] = useState(120);
-  const [streak, setStreak] = useState(7);
+  const [streak, setStreak] = useState(1);
   const [userProgress, setUserProgress] = useState({ 1: true, 2: false });
   const [isPremium, setIsPremium] = useState(false);
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [showCorrectAnimation, setShowCorrectAnimation] = useState(false);
+  const [showEditProfile, setShowEditProfile] = useState(false);
+  
+  // Profile data
+  const [userProfile, setUserProfile] = useState({
+    name: "Euskera Learner",
+    email: "learner@example.com",
+    joinDate: "2025-05-26",
+    totalLessons: 1,
+    totalQuestions: 4,
+    correctAnswersTotal: 4,
+    longestStreak: 1,
+    dailyGoal: 10,
+    weeklyGoal: 3,
+    lastActiveDate: "2025-05-26",
+    streakHistory: ["2025-05-26"],
+    studyTime: 5
+  });
 
-  // Expanded lesson data with 8 lessons
+  // Lessons data
   const lessons = [
     {
       id: 1,
@@ -109,222 +126,6 @@ const EuskeraApp = () => {
           explanation: "Bost means five in Basque."
         }
       ]
-    },
-    {
-      id: 3,
-      title: "Family Members",
-      description: "Learn words for family relationships",
-      difficulty: "Beginner",
-      xp: 25,
-      isPremium: false,
-      category: "Basics",
-      questions: [
-        {
-          type: "multiple-choice",
-          question: "How do you say 'Mother' in Basque?",
-          options: ["ama", "aita", "anaia", "arreba"],
-          correct: "ama",
-          translation: "Mother",
-          explanation: "Ama is the Basque word for mother, one of the most important family terms."
-        },
-        {
-          type: "translation",
-          question: "What does 'aita' mean?",
-          basque: "aita",
-          options: ["Father", "Brother", "Sister", "Uncle"],
-          correct: "Father",
-          translation: "Father",
-          explanation: "Aita means father in Basque."
-        },
-        {
-          type: "multiple-choice",
-          question: "How do you say 'Brother' in Basque?",
-          options: ["arreba", "anaia", "ama", "aita"],
-          correct: "anaia",
-          translation: "Brother",
-          explanation: "Anaia refers to a male sibling or brother."
-        }
-      ]
-    },
-    {
-      id: 4,
-      title: "Colors",
-      description: "Discover the colors in Basque",
-      difficulty: "Beginner",
-      xp: 20,
-      isPremium: false,
-      category: "Basics",
-      questions: [
-        {
-          type: "multiple-choice",
-          question: "How do you say 'Red' in Basque?",
-          options: ["gorria", "urdina", "horia", "berdea"],
-          correct: "gorria",
-          translation: "Red",
-          explanation: "Gorria is the Basque word for the color red."
-        },
-        {
-          type: "translation",
-          question: "What color is 'urdina'?",
-          basque: "urdina",
-          options: ["Blue", "Green", "Yellow", "Red"],
-          correct: "Blue",
-          translation: "Blue",
-          explanation: "Urdina means blue in Basque."
-        },
-        {
-          type: "multiple-choice",
-          question: "How do you say 'Green' in Basque?",
-          options: ["horia", "zuria", "berdea", "beltz"],
-          correct: "berdea",
-          translation: "Green",
-          explanation: "Berdea is the Basque word for green."
-        }
-      ]
-    },
-    {
-      id: 5,
-      title: "Food & Drinks",
-      description: "Essential vocabulary for dining",
-      difficulty: "Intermediate",
-      xp: 30,
-      isPremium: true,
-      category: "Daily Life",
-      questions: [
-        {
-          type: "multiple-choice",
-          question: "How do you say 'Water' in Basque?",
-          options: ["ura", "ardoa", "esnea", "kafea"],
-          correct: "ura",
-          translation: "Water",
-          explanation: "Ura is the essential word for water in Basque."
-        },
-        {
-          type: "translation",
-          question: "What does 'ogia' mean?",
-          basque: "ogia",
-          options: ["Bread", "Cheese", "Meat", "Fish"],
-          correct: "Bread",
-          translation: "Bread",
-          explanation: "Ogia is the Basque word for bread, a staple food."
-        },
-        {
-          type: "multiple-choice",
-          question: "How do you say 'Coffee' in Basque?",
-          options: ["tea", "kafea", "esnea", "ardoa"],
-          correct: "kafea",
-          translation: "Coffee",
-          explanation: "Kafea means coffee in Basque."
-        }
-      ]
-    },
-    {
-      id: 6,
-      title: "Weather & Nature",
-      description: "Talk about weather and natural elements",
-      difficulty: "Intermediate",
-      xp: 35,
-      isPremium: true,
-      category: "Daily Life",
-      questions: [
-        {
-          type: "multiple-choice",
-          question: "How do you say 'Sun' in Basque?",
-          options: ["eguzkia", "euria", "haizetza", "elurra"],
-          correct: "eguzkia",
-          translation: "Sun",
-          explanation: "Eguzkia is the Basque word for sun."
-        },
-        {
-          type: "translation",
-          question: "What does 'euria' mean?",
-          basque: "euria",
-          options: ["Rain", "Wind", "Snow", "Cloud"],
-          correct: "Rain",
-          translation: "Rain",
-          explanation: "Euria means rain in Basque."
-        },
-        {
-          type: "multiple-choice",
-          question: "How do you say 'Snow' in Basque?",
-          options: ["haizetza", "elurra", "lainoa", "eguzkia"],
-          correct: "elurra",
-          translation: "Snow",
-          explanation: "Elurra is the Basque word for snow."
-        }
-      ]
-    },
-    {
-      id: 7,
-      title: "Transportation",
-      description: "Getting around in the Basque Country",
-      difficulty: "Intermediate",
-      xp: 40,
-      isPremium: true,
-      category: "Travel",
-      questions: [
-        {
-          type: "multiple-choice",
-          question: "How do you say 'Car' in Basque?",
-          options: ["autoa", "trenea", "autobusa", "hegazkina"],
-          correct: "autoa",
-          translation: "Car",
-          explanation: "Autoa is the Basque word for car or automobile."
-        },
-        {
-          type: "translation",
-          question: "What does 'geltokia' mean?",
-          basque: "geltokia",
-          options: ["Station", "Airport", "Bus", "Ticket"],
-          correct: "Station",
-          translation: "Station",
-          explanation: "Geltokia refers to a station, typically for trains or buses."
-        },
-        {
-          type: "multiple-choice",
-          question: "How do you say 'Airplane' in Basque?",
-          options: ["trenea", "ontzia", "hegazkina", "bizikleta"],
-          correct: "hegazkina",
-          translation: "Airplane",
-          explanation: "Hegazkina means airplane in Basque."
-        }
-      ]
-    },
-    {
-      id: 8,
-      title: "Business Basque",
-      description: "Professional vocabulary and phrases",
-      difficulty: "Advanced",
-      xp: 50,
-      isPremium: true,
-      category: "Professional",
-      questions: [
-        {
-          type: "multiple-choice",
-          question: "How do you say 'Meeting' in Basque?",
-          options: ["bilera", "bulegoa", "enpresa", "lana"],
-          correct: "bilera",
-          translation: "Meeting",
-          explanation: "Bilera is the Basque term for a business meeting or gathering."
-        },
-        {
-          type: "translation",
-          question: "What does 'kontratua' mean?",
-          basque: "kontratua",
-          options: ["Contract", "Project", "Report", "Email"],
-          correct: "Contract",
-          translation: "Contract",
-          explanation: "Kontratua means contract in business contexts."
-        },
-        {
-          type: "multiple-choice",
-          question: "How do you say 'Office' in Basque?",
-          options: ["fabrika", "bulegoa", "denda", "bankua"],
-          correct: "bulegoa",
-          translation: "Office",
-          explanation: "Bulegoa refers to an office or workplace."
-        }
-      ]
     }
   ];
 
@@ -339,6 +140,7 @@ const EuskeraApp = () => {
       openModal('Premium Required', 'This lesson is part of Euskera Plus. Upgrade to access all intermediate and advanced lessons, unlimited hearts, and premium features!');
       return;
     }
+    
     setCurrentLesson(lessonIndex);
     setCurrentQuestion(0);
     setSelectedAnswer('');
@@ -396,7 +198,190 @@ const EuskeraApp = () => {
     return acc;
   }, {});
 
-  // Screen Components
+  // Navigation component
+  const Navigation = () => (
+    <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg">
+      <div className="max-w-4xl mx-auto px-4">
+        <div className="flex justify-around py-3">
+          <button 
+            onClick={() => setCurrentScreen('home')}
+            className={`flex flex-col items-center space-y-1 transition-colors ${currentScreen === 'home' ? 'text-blue-600' : 'text-gray-400'}`}
+          >
+            <Home className="w-6 h-6" />
+            <span className="text-xs font-medium">Home</span>
+          </button>
+          <button 
+            onClick={() => setCurrentScreen('profile')}
+            className={`flex flex-col items-center space-y-1 transition-colors ${currentScreen === 'profile' ? 'text-blue-600' : 'text-gray-400'}`}
+          >
+            <User className="w-6 h-6" />
+            <span className="text-xs font-medium">Profile</span>
+          </button>
+          <button 
+            onClick={() => setCurrentScreen('friends')}
+            className={`flex flex-col items-center space-y-1 transition-colors ${currentScreen === 'friends' ? 'text-blue-600' : 'text-gray-400'}`}
+          >
+            <Users className="w-6 h-6" />
+            <span className="text-xs font-medium">Friends</span>
+          </button>
+          <button 
+            onClick={() => setCurrentScreen('achievements')}
+            className={`flex flex-col items-center space-y-1 transition-colors ${currentScreen === 'achievements' ? 'text-blue-600' : 'text-gray-400'}`}
+          >
+            <Award className="w-6 h-6" />
+            <span className="text-xs font-medium">Achievements</span>
+          </button>
+          <button 
+            onClick={() => setCurrentScreen('settings')}
+            className={`flex flex-col items-center space-y-1 transition-colors ${currentScreen === 'settings' ? 'text-blue-600' : 'text-gray-400'}`}
+          >
+            <Settings className="w-6 h-6" />
+            <span className="text-xs font-medium">Settings</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
+  // Home Screen
+  const HomeScreen = () => (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 pb-20">
+      <div className="bg-white shadow-sm border-b">
+        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-green-500 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-lg">
+              E
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-800">Euskera</h1>
+              <p className="text-sm text-gray-600">Welcome back!</p>
+            </div>
+          </div>
+          
+          <div className="flex items-center space-x-4">
+            {!isPremium && (
+              <button 
+                onClick={() => openModal('Upgrade to Premium', 'Unlock all lessons, unlimited hearts, offline mode, and premium features for just $9.99/month!')}
+                className="flex items-center space-x-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-4 py-2 rounded-full text-sm font-medium hover:shadow-lg transition-all duration-200 hover:scale-105"
+              >
+                <Crown className="w-4 h-4" />
+                <span>Plus</span>
+              </button>
+            )}
+            <div className="flex items-center space-x-2 text-orange-600">
+              <Flame className="w-5 h-5" />
+              <span className="font-bold">{streak}</span>
+            </div>
+            <div className="flex items-center space-x-2 text-red-500">
+              <Heart className="w-5 h-5" />
+              <span className="font-bold">{hearts}</span>
+            </div>
+            <div className="flex items-center space-x-2 text-yellow-600">
+              <Star className="w-5 h-5" />
+              <span className="font-bold">{xp}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        <div className="bg-gradient-to-r from-blue-500 to-green-500 rounded-2xl shadow-xl p-6 mb-8 text-white">
+          <h3 className="text-xl font-semibold mb-4 flex items-center">
+            <Zap className="w-6 h-6 mr-2" />
+            Your Progress
+          </h3>
+          <div className="grid grid-cols-3 gap-6">
+            <div className="text-center">
+              <div className="text-3xl font-bold mb-1">{Object.values(userProgress).filter(Boolean).length}</div>
+              <div className="text-blue-100">Lessons Completed</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold mb-1">{streak}</div>
+              <div className="text-blue-100">Day Streak</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold mb-1">{xp}</div>
+              <div className="text-blue-100">Total XP</div>
+            </div>
+          </div>
+        </div>
+
+        {Object.entries(groupedLessons).map(([category, categoryLessons]) => (
+          <div key={category} className="mb-8">
+            <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+              {category}
+              {category !== 'Basics' && (
+                <Crown className="w-6 h-6 text-yellow-500 ml-2" />
+              )}
+            </h2>
+            
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {categoryLessons.map((lesson, index) => {
+                const globalIndex = lessons.findIndex(l => l.id === lesson.id);
+                const isLocked = lesson.isPremium && !isPremium;
+                const isCompleted = userProgress[lesson.id];
+                
+                return (
+                  <div key={lesson.id} className={`bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 ${isLocked ? 'opacity-75' : 'hover:-translate-y-1'}`}>
+                    <div className="p-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                          isCompleted ? 'bg-green-100 text-green-600' : 
+                          isLocked ? 'bg-gray-100 text-gray-400' : 'bg-blue-100 text-blue-600'
+                        }`}>
+                          {isLocked ? <Lock className="w-6 h-6" /> : 
+                           isCompleted ? <CheckCircle className="w-6 h-6" /> : <Book className="w-6 h-6" />}
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          {lesson.isPremium && (
+                            <Crown className="w-4 h-4 text-yellow-500" />
+                          )}
+                          <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                            lesson.difficulty === 'Beginner' ? 'bg-green-100 text-green-800' :
+                            lesson.difficulty === 'Intermediate' ? 'bg-yellow-100 text-yellow-800' :
+                            'bg-red-100 text-red-800'
+                          }`}>
+                            {lesson.difficulty}
+                          </span>
+                        </div>
+                      </div>
+                      
+                      <h3 className="text-xl font-semibold text-gray-800 mb-2">{lesson.title}</h3>
+                      <p className="text-gray-600 mb-4">{lesson.description}</p>
+                      
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2 text-yellow-600">
+                          <Star className="w-4 h-4" />
+                          <span className="text-sm font-medium">{lesson.xp} XP</span>
+                        </div>
+                        
+                        <button
+                          onClick={() => startLesson(globalIndex)}
+                          className={`px-6 py-2 rounded-lg font-medium transition-all duration-200 ${
+                            isLocked 
+                              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                              : isCompleted 
+                              ? 'bg-green-600 hover:bg-green-700 text-white hover:scale-105' 
+                              : 'bg-blue-600 hover:bg-blue-700 text-white hover:scale-105'
+                          }`}
+                        >
+                          {isLocked ? 'Premium' : (isCompleted ? 'Review' : 'Start')}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <Navigation />
+    </div>
+  );
+
+  // Lesson Screen
   const LessonScreen = () => {
     const lesson = lessons[currentLesson];
     const question = lesson.questions[currentQuestion];
@@ -635,176 +620,166 @@ const EuskeraApp = () => {
     );
   };
 
-  const HomeScreen = () => (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 pb-20">
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-green-500 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-lg">
-              E
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold text-gray-800">Euskera</h1>
-              <p className="text-sm text-gray-600">Welcome back!</p>
-            </div>
-          </div>
-          
-          <div className="flex items-center space-x-4">
-            {!isPremium && (
-              <button 
-                onClick={() => openModal('Upgrade to Premium', 'Unlock all lessons, unlimited hearts, offline mode, and premium features for just $9.99/month!')}
-                className="flex items-center space-x-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-4 py-2 rounded-full text-sm font-medium hover:shadow-lg transition-all duration-200 hover:scale-105"
+  // Profile Screen
+  const ProfileScreen = () => {
+    const accuracy = userProfile.totalQuestions > 0 ? Math.round((userProfile.correctAnswersTotal / userProfile.totalQuestions) * 100) : 0;
+    const joinedDaysAgo = Math.floor((new Date() - new Date(userProfile.joinDate)) / (1000 * 60 * 60 * 24));
+    
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 pb-20">
+        <div className="bg-white shadow-sm border-b">
+          <div className="max-w-4xl mx-auto px-4 py-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <button 
+                  onClick={() => setCurrentScreen('home')}
+                  className="w-10 h-10 bg-gradient-to-r from-blue-500 to-green-500 rounded-full flex items-center justify-center text-white font-bold text-lg"
+                >
+                  E
+                </button>
+                <h1 className="text-2xl font-bold text-gray-800">Profile</h1>
+              </div>
+              <button
+                onClick={() => setShowEditProfile(true)}
+                className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm transition-colors"
               >
-                <Crown className="w-4 h-4" />
-                <span>Plus</span>
+                <Edit3 className="w-4 h-4" />
+                <span>Edit</span>
               </button>
-            )}
-            <div className="flex items-center space-x-2 text-orange-600">
-              <Flame className="w-5 h-5" />
-              <span className="font-bold">{streak}</span>
-            </div>
-            <div className="flex items-center space-x-2 text-red-500">
-              <Heart className="w-5 h-5" />
-              <span className="font-bold">{hearts}</span>
-            </div>
-            <div className="flex items-center space-x-2 text-yellow-600">
-              <Star className="w-5 h-5" />
-              <span className="font-bold">{xp}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        <div className="bg-gradient-to-r from-blue-500 to-green-500 rounded-2xl shadow-xl p-6 mb-8 text-white">
-          <h3 className="text-xl font-semibold mb-4 flex items-center">
-            <Zap className="w-6 h-6 mr-2" />
-            Your Progress
-          </h3>
-          <div className="grid grid-cols-3 gap-6">
-            <div className="text-center">
-              <div className="text-3xl font-bold mb-1">{Object.values(userProgress).filter(Boolean).length}</div>
-              <div className="text-blue-100">Lessons Completed</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold mb-1">{streak}</div>
-              <div className="text-blue-100">Day Streak</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold mb-1">{xp}</div>
-              <div className="text-blue-100">Total XP</div>
             </div>
           </div>
         </div>
 
-        {Object.entries(groupedLessons).map(([category, categoryLessons]) => (
-          <div key={category} className="mb-8">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center">
-              {category}
-              {category !== 'Basics' && (
-                <Crown className="w-6 h-6 text-yellow-500 ml-2" />
-              )}
-            </h2>
-            
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {categoryLessons.map((lesson, index) => {
-                const globalIndex = lessons.findIndex(l => l.id === lesson.id);
-                const isLocked = lesson.isPremium && !isPremium;
-                const isCompleted = userProgress[lesson.id];
-                
-                return (
-                  <div key={lesson.id} className={`bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 ${isLocked ? 'opacity-75' : 'hover:-translate-y-1'}`}>
-                    <div className="p-6">
-                      <div className="flex items-center justify-between mb-4">
-                        <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                          isCompleted ? 'bg-green-100 text-green-600' : 
-                          isLocked ? 'bg-gray-100 text-gray-400' : 'bg-blue-100 text-blue-600'
-                        }`}>
-                          {isLocked ? <Lock className="w-6 h-6" /> : 
-                           isCompleted ? <CheckCircle className="w-6 h-6" /> : <Book className="w-6 h-6" />}
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          {lesson.isPremium && (
-                            <Crown className="w-4 h-4 text-yellow-500" />
-                          )}
-                          <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                            lesson.difficulty === 'Beginner' ? 'bg-green-100 text-green-800' :
-                            lesson.difficulty === 'Intermediate' ? 'bg-yellow-100 text-yellow-800' :
-                            'bg-red-100 text-red-800'
-                          }`}>
-                            {lesson.difficulty}
-                          </span>
-                        </div>
-                      </div>
-                      
-                      <h3 className="text-xl font-semibold text-gray-800 mb-2">{lesson.title}</h3>
-                      <p className="text-gray-600 mb-4">{lesson.description}</p>
-                      
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-2 text-yellow-600">
-                          <Star className="w-4 h-4" />
-                          <span className="text-sm font-medium">{lesson.xp} XP</span>
-                        </div>
-                        
-                        <button
-                          onClick={() => startLesson(globalIndex)}
-                          className={`px-6 py-2 rounded-lg font-medium transition-all duration-200 ${
-                            isLocked 
-                              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                              : isCompleted 
-                              ? 'bg-green-600 hover:bg-green-700 text-white hover:scale-105' 
-                              : 'bg-blue-600 hover:bg-blue-700 text-white hover:scale-105'
-                          }`}
-                        >
-                          {isLocked ? 'Premium' : (isCompleted ? 'Review' : 'Start')}
-                        </button>
-                      </div>
-                    </div>
+        <div className="max-w-4xl mx-auto px-4 py-8">
+          {/* Profile Header */}
+          <div className="bg-gradient-to-r from-blue-500 to-green-500 rounded-2xl shadow-xl p-6 mb-8 text-white">
+            <div className="flex items-center space-x-4 mb-4">
+              <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center text-2xl font-bold">
+                {userProfile.name.charAt(0)}
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold">{userProfile.name}</h2>
+                <p className="text-blue-100">{userProfile.email}</p>
+                <p className="text-blue-100 text-sm">
+                  Joined {joinedDaysAgo === 0 ? 'today' : `${joinedDaysAgo} days ago`}
+                </p>
+              </div>
+            </div>
+            <div className="grid grid-cols-3 gap-4">
+              <div className="text-center">
+                <div className="text-2xl font-bold">{streak}</div>
+                <div className="text-blue-100 text-sm">Day Streak</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold">{xp}</div>
+                <div className="text-blue-100 text-sm">Total XP</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold">{userProfile.totalLessons}</div>
+                <div className="text-blue-100 text-sm">Lessons</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Stats Cards */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div className="bg-white rounded-xl shadow-lg p-4 text-center">
+              <TrendingUp className="w-8 h-8 text-green-600 mx-auto mb-2" />
+              <div className="text-2xl font-bold text-green-600">{accuracy}%</div>
+              <div className="text-gray-600 text-sm">Accuracy</div>
+            </div>
+            <div className="bg-white rounded-xl shadow-lg p-4 text-center">
+              <Clock className="w-8 h-8 text-blue-600 mx-auto mb-2" />
+              <div className="text-2xl font-bold text-blue-600">{userProfile.studyTime}</div>
+              <div className="text-gray-600 text-sm">Minutes</div>
+            </div>
+            <div className="bg-white rounded-xl shadow-lg p-4 text-center">
+              <Target className="w-8 h-8 text-purple-600 mx-auto mb-2" />
+              <div className="text-2xl font-bold text-purple-600">{userProfile.totalQuestions}</div>
+              <div className="text-gray-600 text-sm">Questions</div>
+            </div>
+            <div className="bg-white rounded-xl shadow-lg p-4 text-center">
+              <Flame className="w-8 h-8 text-orange-600 mx-auto mb-2" />
+              <div className="text-2xl font-bold text-orange-600">{userProfile.longestStreak}</div>
+              <div className="text-gray-600 text-sm">Best Streak</div>
+            </div>
+          </div>
+
+          {/* Goals Section */}
+          <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
+            <h3 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+              <Target className="w-6 h-6 mr-2 text-blue-600" />
+              Learning Goals
+            </h3>
+            <div className="space-y-4">
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-gray-700">Daily Goal</span>
+                  <span className="text-sm text-gray-500">{userProfile.studyTime}/{userProfile.dailyGoal} min</span>
+                </div>
+                <div className="bg-gray-200 rounded-full h-2">
+                  <div 
+                    className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                    style={{ width: `${Math.min((userProfile.studyTime / userProfile.dailyGoal) * 100, 100)}%` }}
+                  ></div>
+                </div>
+              </div>
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-gray-700">Weekly Goal</span>
+                  <span className="text-sm text-gray-500">{userProfile.totalLessons}/{userProfile.weeklyGoal} lessons</span>
+                </div>
+                <div className="bg-gray-200 rounded-full h-2">
+                  <div 
+                    className="bg-green-600 h-2 rounded-full transition-all duration-300"
+                    style={{ width: `${Math.min((userProfile.totalLessons / userProfile.weeklyGoal) * 100, 100)}%` }}
+                  ></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Recent Activity */}
+          <div className="bg-white rounded-xl shadow-lg p-6">
+            <h3 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+              <Calendar className="w-6 h-6 mr-2 text-green-600" />
+              Recent Activity
+            </h3>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                    <CheckCircle className="w-5 h-5 text-green-600" />
                   </div>
-                );
-              })}
+                  <div>
+                    <div className="font-medium text-gray-800">Completed Basic Greetings</div>
+                    <div className="text-sm text-gray-500">Today</div>
+                  </div>
+                </div>
+                <div className="text-yellow-600 font-semibold">+15 XP</div>
+              </div>
+              <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                    <Flame className="w-5 h-5 text-orange-600" />
+                  </div>
+                  <div>
+                    <div className="font-medium text-gray-800">Started daily streak</div>
+                    <div className="text-sm text-gray-500">Today</div>
+                  </div>
+                </div>
+                <div className="text-orange-600 font-semibold">Day 1</div>
+              </div>
             </div>
           </div>
-        ))}
-      </div>
-
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg">
-        <div className="max-w-4xl mx-auto px-4">
-          <div className="flex justify-around py-3">
-            <button 
-              onClick={() => setCurrentScreen('home')}
-              className={`flex flex-col items-center space-y-1 transition-colors ${currentScreen === 'home' ? 'text-blue-600' : 'text-gray-400'}`}
-            >
-              <Home className="w-6 h-6" />
-              <span className="text-xs font-medium">Home</span>
-            </button>
-            <button 
-              onClick={() => setCurrentScreen('friends')}
-              className={`flex flex-col items-center space-y-1 transition-colors ${currentScreen === 'friends' ? 'text-blue-600' : 'text-gray-400'}`}
-            >
-              <Users className="w-6 h-6" />
-              <span className="text-xs font-medium">Friends</span>
-            </button>
-            <button 
-              onClick={() => setCurrentScreen('achievements')}
-              className={`flex flex-col items-center space-y-1 transition-colors ${currentScreen === 'achievements' ? 'text-blue-600' : 'text-gray-400'}`}
-            >
-              <Award className="w-6 h-6" />
-              <span className="text-xs font-medium">Achievements</span>
-            </button>
-            <button 
-              onClick={() => setCurrentScreen('settings')}
-              className={`flex flex-col items-center space-y-1 transition-colors ${currentScreen === 'settings' ? 'text-blue-600' : 'text-gray-400'}`}
-            >
-              <Settings className="w-6 h-6" />
-              <span className="text-xs font-medium">Settings</span>
-            </button>
-          </div>
         </div>
-      </div>
-    </div>
-  );
 
+        <Navigation />
+      </div>
+    );
+  };
+
+  // Simple screens for other navigation items
   const FriendsScreen = () => (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 pb-20">
       <div className="bg-white shadow-sm border-b">
@@ -836,40 +811,7 @@ const EuskeraApp = () => {
         </div>
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg">
-        <div className="max-w-4xl mx-auto px-4">
-          <div className="flex justify-around py-3">
-            <button 
-              onClick={() => setCurrentScreen('home')} 
-              className={`flex flex-col items-center space-y-1 transition-colors ${currentScreen === 'home' ? 'text-blue-600' : 'text-gray-400'}`}
-            >
-              <Home className="w-6 h-6" />
-              <span className="text-xs font-medium">Home</span>
-            </button>
-            <button 
-              onClick={() => setCurrentScreen('friends')}
-              className={`flex flex-col items-center space-y-1 transition-colors ${currentScreen === 'friends' ? 'text-blue-600' : 'text-gray-400'}`}
-            >
-              <Users className="w-6 h-6" />
-              <span className="text-xs font-medium">Friends</span>
-            </button>
-            <button 
-              onClick={() => setCurrentScreen('achievements')}
-              className={`flex flex-col items-center space-y-1 transition-colors ${currentScreen === 'achievements' ? 'text-blue-600' : 'text-gray-400'}`}
-            >
-              <Award className="w-6 h-6" />
-              <span className="text-xs font-medium">Achievements</span>
-            </button>
-            <button 
-              onClick={() => setCurrentScreen('settings')}
-              className={`flex flex-col items-center space-y-1 transition-colors ${currentScreen === 'settings' ? 'text-blue-600' : 'text-gray-400'}`}
-            >
-              <Settings className="w-6 h-6" />
-              <span className="text-xs font-medium">Settings</span>
-            </button>
-          </div>
-        </div>
-      </div>
+      <Navigation />
     </div>
   );
 
@@ -944,55 +886,11 @@ const EuskeraApp = () => {
                 <Lock className="w-6 h-6 text-gray-400" />
               </div>
             </div>
-
-            <div className="p-4 rounded-lg border-2 border-gray-200 bg-gray-50">
-              <div className="flex items-center space-x-3">
-                <span className="text-3xl">⭐</span>
-                <div className="flex-1">
-                  <h4 className="font-semibold text-gray-500">Perfectionist</h4>
-                  <p className="text-sm text-gray-400">Complete a lesson with no mistakes</p>
-                </div>
-                <Lock className="w-6 h-6 text-gray-400" />
-              </div>
-            </div>
           </div>
         </div>
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg">
-        <div className="max-w-4xl mx-auto px-4">
-          <div className="flex justify-around py-3">
-            <button 
-              onClick={() => setCurrentScreen('home')} 
-              className={`flex flex-col items-center space-y-1 transition-colors ${currentScreen === 'home' ? 'text-blue-600' : 'text-gray-400'}`}
-            >
-              <Home className="w-6 h-6" />
-              <span className="text-xs font-medium">Home</span>
-            </button>
-            <button 
-              onClick={() => setCurrentScreen('friends')}
-              className={`flex flex-col items-center space-y-1 transition-colors ${currentScreen === 'friends' ? 'text-blue-600' : 'text-gray-400'}`}
-            >
-              <Users className="w-6 h-6" />
-              <span className="text-xs font-medium">Friends</span>
-            </button>
-            <button 
-              onClick={() => setCurrentScreen('achievements')}
-              className={`flex flex-col items-center space-y-1 transition-colors ${currentScreen === 'achievements' ? 'text-blue-600' : 'text-gray-400'}`}
-            >
-              <Award className="w-6 h-6" />
-              <span className="text-xs font-medium">Achievements</span>
-            </button>
-            <button 
-              onClick={() => setCurrentScreen('settings')}
-              className={`flex flex-col items-center space-y-1 transition-colors ${currentScreen === 'settings' ? 'text-blue-600' : 'text-gray-400'}`}
-            >
-              <Settings className="w-6 h-6" />
-              <span className="text-xs font-medium">Settings</span>
-            </button>
-          </div>
-        </div>
-      </div>
+      <Navigation />
     </div>
   );
 
@@ -1056,43 +954,103 @@ const EuskeraApp = () => {
         </div>
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg">
-        <div className="max-w-4xl mx-auto px-4">
-          <div className="flex justify-around py-3">
-            <button 
-              onClick={() => setCurrentScreen('home')} 
-              className={`flex flex-col items-center space-y-1 transition-colors ${currentScreen === 'home' ? 'text-blue-600' : 'text-gray-400'}`}
-            >
-              <Home className="w-6 h-6" />
-              <span className="text-xs font-medium">Home</span>
-            </button>
-            <button 
-              onClick={() => setCurrentScreen('friends')}
-              className={`flex flex-col items-center space-y-1 transition-colors ${currentScreen === 'friends' ? 'text-blue-600' : 'text-gray-400'}`}
-            >
-              <Users className="w-6 h-6" />
-              <span className="text-xs font-medium">Friends</span>
-            </button>
-            <button 
-              onClick={() => setCurrentScreen('achievements')}
-              className={`flex flex-col items-center space-y-1 transition-colors ${currentScreen === 'achievements' ? 'text-blue-600' : 'text-gray-400'}`}
-            >
-              <Award className="w-6 h-6" />
-              <span className="text-xs font-medium">Achievements</span>
-            </button>
-            <button 
-              onClick={() => setCurrentScreen('settings')}
-              className={`flex flex-col items-center space-y-1 transition-colors ${currentScreen === 'settings' ? 'text-blue-600' : 'text-gray-400'}`}
-            >
-              <Settings className="w-6 h-6" />
-              <span className="text-xs font-medium">Settings</span>
-            </button>
-          </div>
-        </div>
-      </div>
+      <Navigation />
     </div>
   );
 
+  // Edit Profile Modal
+  const EditProfileModal = () => {
+    const [editedProfile, setEditedProfile] = useState({
+      name: userProfile.name,
+      email: userProfile.email,
+      dailyGoal: userProfile.dailyGoal,
+      weeklyGoal: userProfile.weeklyGoal
+    });
+    
+    if (!showEditProfile) return null;
+
+    const handleSave = () => {
+      setUserProfile(prev => ({
+        ...prev,
+        ...editedProfile
+      }));
+      setShowEditProfile(false);
+    };
+
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full max-h-[80vh] overflow-y-auto">
+          <div className="p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold text-gray-800">Edit Profile</h2>
+              <button
+                onClick={() => setShowEditProfile(false)}
+                className="text-gray-600 hover:text-gray-800 text-2xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100"
+              >
+                ×
+              </button>
+            </div>
+            
+            <div className="space-y-4 mb-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                <input
+                  type="text"
+                  value={editedProfile.name}
+                  onChange={(e) => setEditedProfile({...editedProfile, name: e.target.value})}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <input
+                  type="email"
+                  value={editedProfile.email}
+                  onChange={(e) => setEditedProfile({...editedProfile, email: e.target.value})}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Daily Goal (minutes)</label>
+                <input
+                  type="number"
+                  value={editedProfile.dailyGoal}
+                  onChange={(e) => setEditedProfile({...editedProfile, dailyGoal: parseInt(e.target.value)})}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Weekly Goal (lessons)</label>
+                <input
+                  type="number"
+                  value={editedProfile.weeklyGoal}
+                  onChange={(e) => setEditedProfile({...editedProfile, weeklyGoal: parseInt(e.target.value)})}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+            </div>
+            
+            <div className="flex space-x-3">
+              <button
+                onClick={() => setShowEditProfile(false)}
+                className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-3 px-6 rounded-lg transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSave}
+                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-colors"
+              >
+                Save Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // Modal Component
   const Modal = ({ isOpen, onClose, title, content }) => {
     if (!isOpen) return null;
 
@@ -1124,9 +1082,11 @@ const EuskeraApp = () => {
     );
   };
 
+  // Main App Render
   return (
     <div className="font-sans">
       {currentScreen === 'home' && <HomeScreen />}
+      {currentScreen === 'profile' && <ProfileScreen />}
       {currentScreen === 'friends' && <FriendsScreen />}
       {currentScreen === 'achievements' && <AchievementsScreen />}
       {currentScreen === 'settings' && <SettingsScreen />}
@@ -1138,6 +1098,8 @@ const EuskeraApp = () => {
         title={modalContent.title}
         content={modalContent.content}
       />
+      
+      <EditProfileModal />
     </div>
   );
 };
