@@ -2,24 +2,29 @@ import React, { useState, useEffect } from 'react';
 import { Home, Users, Award, Settings, Star, Heart, Flame, Book, CheckCircle, XCircle, Trophy, Crown, Lock, Target, Zap, Sparkles, User, Calendar, Clock, TrendingUp, Edit3 } from 'lucide-react';
 
 const EuskeraApp = () => {
+  // Basic app state
   const [currentScreen, setCurrentScreen] = useState('home');
   const [showModal, setShowModal] = useState(false);
   const [modalContent, setModalContent] = useState({ title: '', content: '' });
+  
+  // Lesson state
   const [currentLesson, setCurrentLesson] = useState(0);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState('');
   const [showResult, setShowResult] = useState(false);
   const [lessonComplete, setLessonComplete] = useState(false);
+  const [correctAnswers, setCorrectAnswers] = useState(0);
+  const [showCorrectAnimation, setShowCorrectAnimation] = useState(false);
+  
+  // User progress state
   const [hearts, setHearts] = useState(5);
   const [xp, setXp] = useState(120);
   const [streak, setStreak] = useState(1);
   const [userProgress, setUserProgress] = useState({ 1: true, 2: false });
   const [isPremium, setIsPremium] = useState(false);
-  const [correctAnswers, setCorrectAnswers] = useState(0);
-  const [showCorrectAnimation, setShowCorrectAnimation] = useState(false);
-  const [showEditProfile, setShowEditProfile] = useState(false);
   
-  // Profile data
+  // Profile state
+  const [showEditProfile, setShowEditProfile] = useState(false);
   const [userProfile, setUserProfile] = useState({
     name: "Euskera Learner",
     email: "learner@example.com",
@@ -34,6 +39,12 @@ const EuskeraApp = () => {
     streakHistory: ["2025-05-26"],
     studyTime: 5
   });
+  
+  // Ad state
+  const [showAdModal, setShowAdModal] = useState(false);
+  const [adModalType, setAdModalType] = useState('');
+  const [showInterstitialAd, setShowInterstitialAd] = useState(false);
+  const [lessonsCompletedToday, setLessonsCompletedToday] = useState(0);
 
   // Lessons data
   const lessons = [
@@ -52,7 +63,7 @@ const EuskeraApp = () => {
           options: ["Kaixo", "Agur", "Eskerrik asko", "Mesedez"],
           correct: "Kaixo",
           translation: "Hello",
-          explanation: "Kaixo is the most common informal greeting in Basque, similar to 'Hi' or 'Hello' in English."
+          explanation: "Kaixo is the most common informal greeting in Basque."
         },
         {
           type: "translation",
@@ -69,7 +80,7 @@ const EuskeraApp = () => {
           options: ["Kaixo", "Agur", "Eskerrik asko", "Barkatu"],
           correct: "Eskerrik asko",
           translation: "Thank you very much",
-          explanation: "Eskerrik asko means 'thank you very much' - the most polite way to express gratitude."
+          explanation: "Eskerrik asko means 'thank you very much'."
         },
         {
           type: "translation",
@@ -78,7 +89,7 @@ const EuskeraApp = () => {
           options: ["Hello", "Goodbye", "Please", "Sorry"],
           correct: "Goodbye",
           translation: "Goodbye",
-          explanation: "Agur is used when leaving or saying farewell to someone."
+          explanation: "Agur is used when leaving or saying farewell."
         }
       ]
     },
@@ -106,7 +117,7 @@ const EuskeraApp = () => {
           options: ["bi", "hiru", "lau", "bost"],
           correct: "hiru",
           translation: "Three",
-          explanation: "Hiru is the Basque word for the number three."
+          explanation: "Hiru is the Basque word for three."
         },
         {
           type: "translation",
@@ -115,7 +126,7 @@ const EuskeraApp = () => {
           options: ["Eight", "Nine", "Ten", "Seven"],
           correct: "Ten",
           translation: "Ten",
-          explanation: "Hamar is the highest single digit number in Basque counting."
+          explanation: "Hamar is ten in Basque."
         },
         {
           type: "multiple-choice",
@@ -129,6 +140,7 @@ const EuskeraApp = () => {
     }
   ];
 
+  // Helper functions
   const openModal = (title, content) => {
     setModalContent({ title, content });
     setShowModal(true);
@@ -137,7 +149,7 @@ const EuskeraApp = () => {
   const startLesson = (lessonIndex) => {
     const lesson = lessons[lessonIndex];
     if (lesson.isPremium && !isPremium) {
-      openModal('Premium Required', 'This lesson is part of Euskera Plus. Upgrade to access all intermediate and advanced lessons, unlimited hearts, and premium features!');
+      openModal('Premium Required', 'This lesson is part of Euskera Plus. Upgrade to access all lessons and remove ads!');
       return;
     }
     
@@ -177,6 +189,12 @@ const EuskeraApp = () => {
         newProgress[lessons[currentLesson].id] = true;
         setUserProgress(newProgress);
         setXp(prevXp => prevXp + lessons[currentLesson].xp);
+        
+        setLessonsCompletedToday(prev => prev + 1);
+        
+        if (!isPremium && lessonsCompletedToday > 0 && (lessonsCompletedToday + 1) % 3 === 0) {
+          setTimeout(() => setShowInterstitialAd(true), 2000);
+        }
       }
     }, 2000);
   };
@@ -190,6 +208,27 @@ const EuskeraApp = () => {
     setCorrectAnswers(0);
   };
 
+  // Ad functions
+  const watchAdForReward = (type) => {
+    setAdModalType(type);
+    setShowAdModal(true);
+  };
+
+  const completeAdReward = () => {
+    switch(adModalType) {
+      case 'hearts':
+        setHearts(5);
+        break;
+      case 'xp':
+        setXp(prev => prev + 20);
+        break;
+      default:
+        break;
+    }
+    setShowAdModal(false);
+    setAdModalType('');
+  };
+
   const groupedLessons = lessons.reduce((acc, lesson) => {
     if (!acc[lesson.category]) {
       acc[lesson.category] = [];
@@ -198,7 +237,7 @@ const EuskeraApp = () => {
     return acc;
   }, {});
 
-  // Navigation component
+  // Components
   const Navigation = () => (
     <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg">
       <div className="max-w-4xl mx-auto px-4">
@@ -243,7 +282,6 @@ const EuskeraApp = () => {
     </div>
   );
 
-  // Home Screen
   const HomeScreen = () => (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 pb-20">
       <div className="bg-white shadow-sm border-b">
@@ -261,11 +299,11 @@ const EuskeraApp = () => {
           <div className="flex items-center space-x-4">
             {!isPremium && (
               <button 
-                onClick={() => openModal('Upgrade to Premium', 'Unlock all lessons, unlimited hearts, offline mode, and premium features for just $9.99/month!')}
+                onClick={() => openModal('Remove Ads', 'Remove all ads and unlock premium features for just $9.99/month!\n\n✨ No advertisements\n🔥 Unlimited hearts\n📚 All lessons unlocked\n⚡ Priority support')}
                 className="flex items-center space-x-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-4 py-2 rounded-full text-sm font-medium hover:shadow-lg transition-all duration-200 hover:scale-105"
               >
                 <Crown className="w-4 h-4" />
-                <span>Plus</span>
+                <span>Remove Ads</span>
               </button>
             )}
             <div className="flex items-center space-x-2 text-orange-600">
@@ -316,7 +354,7 @@ const EuskeraApp = () => {
             </h2>
             
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {categoryLessons.map((lesson, index) => {
+              {categoryLessons.map((lesson) => {
                 const globalIndex = lessons.findIndex(l => l.id === lesson.id);
                 const isLocked = lesson.isPremium && !isPremium;
                 const isCompleted = userProgress[lesson.id];
@@ -375,17 +413,80 @@ const EuskeraApp = () => {
             </div>
           </div>
         ))}
+
+        {/* Banner Ad for Non-Premium */}
+        {!isPremium && (
+          <div className="mb-8">
+            <div className="bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
+              <p className="text-sm text-gray-500 mb-2">Advertisement</p>
+              <div className="bg-gradient-to-r from-blue-100 to-green-100 rounded p-6">
+                <h4 className="font-semibold text-gray-700 mb-2">Learn Spanish Next!</h4>
+                <p className="text-sm text-gray-600 mb-3">Master multiple languages with our partner app</p>
+                <button className="bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700 transition-colors">
+                  Try SpanishPro Free
+                </button>
+              </div>
+              <button 
+                onClick={() => openModal('Remove Ads', 'Tired of ads? Upgrade to Premium!\n\n✨ No advertisements\n🔥 Unlimited hearts\n📚 All lessons unlocked')}
+                className="text-xs text-blue-600 hover:underline mt-2"
+              >
+                Remove ads
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       <Navigation />
     </div>
   );
 
-  // Lesson Screen
+  // Hearts depleted screen
+  const HeartsDepletedScreen = () => (
+    <div className="min-h-screen bg-gradient-to-br from-red-50 to-pink-50 flex items-center justify-center">
+      <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4 text-center">
+        <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <Heart className="w-10 h-10 text-red-600" />
+        </div>
+        <h2 className="text-2xl font-bold text-gray-800 mb-2">Out of Hearts!</h2>
+        <p className="text-gray-600 mb-6">You've run out of hearts. Watch an ad to get more hearts or upgrade to premium for unlimited hearts.</p>
+        
+        <div className="space-y-3 mb-6">
+          <button
+            onClick={() => watchAdForReward('hearts')}
+            className="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white py-3 px-6 rounded-lg font-medium hover:shadow-lg transition-all duration-200 flex items-center justify-center space-x-2"
+          >
+            <span>📺</span>
+            <span>Watch Ad - Get Full Hearts</span>
+          </button>
+          
+          <button
+            onClick={() => openModal('Upgrade to Premium', 'Get unlimited hearts and remove all ads!\n\n💖 Unlimited hearts\n✨ No advertisements\n📚 All lessons unlocked\n\nUpgrade now for $9.99/month')}
+            className="w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-white py-3 px-6 rounded-lg font-medium hover:shadow-lg transition-all duration-200 flex items-center justify-center space-x-2"
+          >
+            <Crown className="w-5 h-5" />
+            <span>Get Premium - Unlimited Hearts</span>
+          </button>
+        </div>
+        
+        <button
+          onClick={goHome}
+          className="text-gray-500 hover:text-gray-700 text-sm"
+        >
+          Wait for hearts to refill (4h 23m)
+        </button>
+      </div>
+    </div>
+  );
+
   const LessonScreen = () => {
     const lesson = lessons[currentLesson];
     const question = lesson.questions[currentQuestion];
     const isCorrect = selectedAnswer === question.correct;
+
+    if (hearts <= 0 && !isPremium) {
+      return <HeartsDepletedScreen />;
+    }
 
     if (lessonComplete) {
       const finalAccuracy = Math.round((correctAnswers / lesson.questions.length) * 100);
@@ -451,10 +552,20 @@ const EuskeraApp = () => {
               
               <button
                 onClick={goHome}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-colors"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-colors mb-4"
               >
                 Continue Learning
               </button>
+              
+              {!isPremium && (
+                <button
+                  onClick={() => watchAdForReward('xp')}
+                  className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium py-2 px-6 rounded-lg transition-colors flex items-center justify-center space-x-2 text-sm"
+                >
+                  <span>📺</span>
+                  <span>Watch Ad for +20 Bonus XP</span>
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -491,6 +602,14 @@ const EuskeraApp = () => {
                 <div className="flex items-center space-x-1 text-red-500">
                   <Heart className="w-5 h-5" />
                   <span className="font-bold">{hearts}</span>
+                  {!isPremium && hearts < 3 && (
+                    <button
+                      onClick={() => watchAdForReward('hearts')}
+                      className="ml-2 text-xs bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600 transition-colors"
+                    >
+                      +5 ❤️
+                    </button>
+                  )}
                 </div>
                 <div className="flex items-center space-x-1 text-yellow-600">
                   <Star className="w-5 h-5" />
@@ -620,166 +739,49 @@ const EuskeraApp = () => {
     );
   };
 
-  // Profile Screen
-  const ProfileScreen = () => {
-    const accuracy = userProfile.totalQuestions > 0 ? Math.round((userProfile.correctAnswersTotal / userProfile.totalQuestions) * 100) : 0;
-    const joinedDaysAgo = Math.floor((new Date() - new Date(userProfile.joinDate)) / (1000 * 60 * 60 * 24));
-    
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 pb-20">
-        <div className="bg-white shadow-sm border-b">
-          <div className="max-w-4xl mx-auto px-4 py-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-                <button 
-                  onClick={() => setCurrentScreen('home')}
-                  className="w-10 h-10 bg-gradient-to-r from-blue-500 to-green-500 rounded-full flex items-center justify-center text-white font-bold text-lg"
-                >
-                  E
-                </button>
-                <h1 className="text-2xl font-bold text-gray-800">Profile</h1>
-              </div>
-              <button
-                onClick={() => setShowEditProfile(true)}
-                className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm transition-colors"
-              >
-                <Edit3 className="w-4 h-4" />
-                <span>Edit</span>
-              </button>
-            </div>
+  // Simple placeholder screens
+  const ProfileScreen = () => (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 pb-20">
+      <div className="bg-white shadow-sm border-b">
+        <div className="max-w-4xl mx-auto px-4 py-4">
+          <div className="flex items-center space-x-4">
+            <button 
+              onClick={() => setCurrentScreen('home')}
+              className="w-10 h-10 bg-gradient-to-r from-blue-500 to-green-500 rounded-full flex items-center justify-center text-white font-bold text-lg"
+            >
+              E
+            </button>
+            <h1 className="text-2xl font-bold text-gray-800">Profile</h1>
           </div>
         </div>
-
-        <div className="max-w-4xl mx-auto px-4 py-8">
-          {/* Profile Header */}
-          <div className="bg-gradient-to-r from-blue-500 to-green-500 rounded-2xl shadow-xl p-6 mb-8 text-white">
-            <div className="flex items-center space-x-4 mb-4">
-              <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center text-2xl font-bold">
-                {userProfile.name.charAt(0)}
-              </div>
-              <div>
-                <h2 className="text-2xl font-bold">{userProfile.name}</h2>
-                <p className="text-blue-100">{userProfile.email}</p>
-                <p className="text-blue-100 text-sm">
-                  Joined {joinedDaysAgo === 0 ? 'today' : `${joinedDaysAgo} days ago`}
-                </p>
-              </div>
-            </div>
-            <div className="grid grid-cols-3 gap-4">
-              <div className="text-center">
-                <div className="text-2xl font-bold">{streak}</div>
-                <div className="text-blue-100 text-sm">Day Streak</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold">{xp}</div>
-                <div className="text-blue-100 text-sm">Total XP</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold">{userProfile.totalLessons}</div>
-                <div className="text-blue-100 text-sm">Lessons</div>
-              </div>
-            </div>
-          </div>
-
-          {/* Stats Cards */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            <div className="bg-white rounded-xl shadow-lg p-4 text-center">
-              <TrendingUp className="w-8 h-8 text-green-600 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-green-600">{accuracy}%</div>
-              <div className="text-gray-600 text-sm">Accuracy</div>
-            </div>
-            <div className="bg-white rounded-xl shadow-lg p-4 text-center">
-              <Clock className="w-8 h-8 text-blue-600 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-blue-600">{userProfile.studyTime}</div>
-              <div className="text-gray-600 text-sm">Minutes</div>
-            </div>
-            <div className="bg-white rounded-xl shadow-lg p-4 text-center">
-              <Target className="w-8 h-8 text-purple-600 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-purple-600">{userProfile.totalQuestions}</div>
-              <div className="text-gray-600 text-sm">Questions</div>
-            </div>
-            <div className="bg-white rounded-xl shadow-lg p-4 text-center">
-              <Flame className="w-8 h-8 text-orange-600 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-orange-600">{userProfile.longestStreak}</div>
-              <div className="text-gray-600 text-sm">Best Streak</div>
-            </div>
-          </div>
-
-          {/* Goals Section */}
-          <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
-            <h3 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
-              <Target className="w-6 h-6 mr-2 text-blue-600" />
-              Learning Goals
-            </h3>
-            <div className="space-y-4">
-              <div>
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-gray-700">Daily Goal</span>
-                  <span className="text-sm text-gray-500">{userProfile.studyTime}/{userProfile.dailyGoal} min</span>
-                </div>
-                <div className="bg-gray-200 rounded-full h-2">
-                  <div 
-                    className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                    style={{ width: `${Math.min((userProfile.studyTime / userProfile.dailyGoal) * 100, 100)}%` }}
-                  ></div>
-                </div>
-              </div>
-              <div>
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-gray-700">Weekly Goal</span>
-                  <span className="text-sm text-gray-500">{userProfile.totalLessons}/{userProfile.weeklyGoal} lessons</span>
-                </div>
-                <div className="bg-gray-200 rounded-full h-2">
-                  <div 
-                    className="bg-green-600 h-2 rounded-full transition-all duration-300"
-                    style={{ width: `${Math.min((userProfile.totalLessons / userProfile.weeklyGoal) * 100, 100)}%` }}
-                  ></div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Recent Activity */}
-          <div className="bg-white rounded-xl shadow-lg p-6">
-            <h3 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
-              <Calendar className="w-6 h-6 mr-2 text-green-600" />
-              Recent Activity
-            </h3>
-            <div className="space-y-3">
-              <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                    <CheckCircle className="w-5 h-5 text-green-600" />
-                  </div>
-                  <div>
-                    <div className="font-medium text-gray-800">Completed Basic Greetings</div>
-                    <div className="text-sm text-gray-500">Today</div>
-                  </div>
-                </div>
-                <div className="text-yellow-600 font-semibold">+15 XP</div>
-              </div>
-              <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                    <Flame className="w-5 h-5 text-orange-600" />
-                  </div>
-                  <div>
-                    <div className="font-medium text-gray-800">Started daily streak</div>
-                    <div className="text-sm text-gray-500">Today</div>
-                  </div>
-                </div>
-                <div className="text-orange-600 font-semibold">Day 1</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <Navigation />
       </div>
-    );
-  };
 
-  // Simple screens for other navigation items
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        <div className="bg-white rounded-xl shadow-lg p-6 text-center">
+          <User className="w-16 h-16 text-blue-600 mx-auto mb-4" />
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">{userProfile.name}</h2>
+          <p className="text-gray-600 mb-4">{userProfile.email}</p>
+          <div className="grid grid-cols-3 gap-4">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-blue-600">{streak}</div>
+              <div className="text-gray-600 text-sm">Day Streak</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-yellow-600">{xp}</div>
+              <div className="text-gray-600 text-sm">Total XP</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-green-600">{userProfile.totalLessons}</div>
+              <div className="text-gray-600 text-sm">Lessons</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <Navigation />
+    </div>
+  );
+
   const FriendsScreen = () => (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 pb-20">
       <div className="bg-white shadow-sm border-b">
@@ -798,8 +800,6 @@ const EuskeraApp = () => {
 
       <div className="max-w-4xl mx-auto px-4 py-8">
         <div className="bg-white rounded-xl shadow-lg p-6">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">Learning Community</h2>
-          
           <div className="text-center py-8">
             <Users className="w-16 h-16 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-gray-600 mb-2">Start Your Community</h3>
@@ -832,25 +832,6 @@ const EuskeraApp = () => {
       </div>
 
       <div className="max-w-4xl mx-auto px-4 py-8">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white rounded-xl shadow-lg p-6 text-center">
-            <div className="text-3xl font-bold text-blue-600">{Object.values(userProgress).filter(Boolean).length}</div>
-            <div className="text-gray-600 text-sm">Lessons</div>
-          </div>
-          <div className="bg-white rounded-xl shadow-lg p-6 text-center">
-            <div className="text-3xl font-bold text-orange-600">{streak}</div>
-            <div className="text-gray-600 text-sm">Day Streak</div>
-          </div>
-          <div className="bg-white rounded-xl shadow-lg p-6 text-center">
-            <div className="text-3xl font-bold text-yellow-600">{xp}</div>
-            <div className="text-gray-600 text-sm">Total XP</div>
-          </div>
-          <div className="bg-white rounded-xl shadow-lg p-6 text-center">
-            <div className="text-3xl font-bold text-green-600">2</div>
-            <div className="text-gray-600 text-sm">Achievements</div>
-          </div>
-        </div>
-
         <div className="bg-white rounded-xl shadow-lg p-6">
           <h3 className="text-xl font-semibold text-gray-800 mb-4">Your Achievements</h3>
           <div className="space-y-4">
@@ -862,28 +843,6 @@ const EuskeraApp = () => {
                   <p className="text-sm text-yellow-700">Complete your first lesson</p>
                 </div>
                 <Trophy className="w-6 h-6 text-yellow-600" />
-              </div>
-            </div>
-
-            <div className="p-4 rounded-lg border-2 border-yellow-300 bg-yellow-50">
-              <div className="flex items-center space-x-3">
-                <span className="text-3xl">🔥</span>
-                <div className="flex-1">
-                  <h4 className="font-semibold text-yellow-800">Week Warrior</h4>
-                  <p className="text-sm text-yellow-700">Maintain a 7-day streak</p>
-                </div>
-                <Trophy className="w-6 h-6 text-yellow-600" />
-              </div>
-            </div>
-
-            <div className="p-4 rounded-lg border-2 border-gray-200 bg-gray-50">
-              <div className="flex items-center space-x-3">
-                <span className="text-3xl">📚</span>
-                <div className="flex-1">
-                  <h4 className="font-semibold text-gray-500">Scholar</h4>
-                  <p className="text-sm text-gray-400">Complete 5 lessons</p>
-                </div>
-                <Lock className="w-6 h-6 text-gray-400" />
               </div>
             </div>
           </div>
@@ -911,44 +870,20 @@ const EuskeraApp = () => {
       </div>
 
       <div className="max-w-4xl mx-auto px-4 py-8">
-        {!isPremium && (
-          <div className="bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl shadow-lg p-6 mb-6 text-white">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-xl font-semibold mb-2">Upgrade to Euskera Plus</h3>
-                <p className="text-yellow-100">Unlock all lessons, unlimited hearts, and premium features!</p>
-              </div>
-              <Crown className="w-12 h-12 text-yellow-200" />
-            </div>
-            <button 
-              onClick={() => openModal('Upgrade to Premium', 'Euskera Plus Features:\n\n• All 8 lessons (including Business Basque)\n• Unlimited hearts\n• Offline mode\n• Priority support\n• Advanced grammar explanations\n\nOnly $9.99/month!')}
-              className="mt-4 bg-white text-orange-600 font-semibold py-2 px-6 rounded-lg hover:bg-yellow-50 transition-colors"
-            >
-              Upgrade Now
-            </button>
-          </div>
-        )}
-
         <div className="bg-white rounded-xl shadow-lg p-6">
           <h3 className="text-xl font-semibold text-gray-800 mb-4">App Settings</h3>
           <div className="space-y-3">
             <button 
-              onClick={() => openModal('Privacy Policy', 'At Euskera, we take your privacy seriously. We collect minimal data necessary to provide our language learning service. Your learning progress is stored securely and never shared with third parties. We use industry-standard encryption to protect your data. You can request deletion of your data at any time by contacting support.')}
+              onClick={() => openModal('Privacy Policy', 'At Euskera, we take your privacy seriously. We collect minimal data necessary to provide our language learning service.')}
               className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 py-3 px-6 rounded-lg text-left transition-colors"
             >
               Privacy Policy
             </button>
             <button 
-              onClick={() => openModal('Terms of Service', 'By using Euskera, you agree to our terms. Our service is provided "as is" for educational purposes. You are responsible for maintaining the confidentiality of your account. We reserve the right to modify the service and these terms. Prohibited uses include sharing accounts or using the service for commercial purposes without permission.')}
+              onClick={() => openModal('Terms of Service', 'By using Euskera, you agree to our terms of service.')}
               className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 py-3 px-6 rounded-lg text-left transition-colors"
             >
               Terms of Service
-            </button>
-            <button 
-              onClick={() => openModal('Contact Support', 'Need help with Euskera? We are here to help!\n\n📧 Email us at: euskerasupport@gmail.com\n\nWe typically respond within 24-48 hours. For technical issues, please include:\n• Your device type (mobile/desktop)\n• Browser you are using\n• Description of the issue\n\nYou can also provide feedback through your app store reviews!')}
-              className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 py-3 px-6 rounded-lg text-left transition-colors"
-            >
-              Contact Support
             </button>
           </div>
         </div>
@@ -958,99 +893,138 @@ const EuskeraApp = () => {
     </div>
   );
 
-  // Edit Profile Modal
-  const EditProfileModal = () => {
-    const [editedProfile, setEditedProfile] = useState({
-      name: userProfile.name,
-      email: userProfile.email,
-      dailyGoal: userProfile.dailyGoal,
-      weeklyGoal: userProfile.weeklyGoal
-    });
-    
-    if (!showEditProfile) return null;
+  // Ad Modals
+  const RewardedAdModal = () => {
+    const [adProgress, setAdProgress] = useState(0);
+    const [adComplete, setAdComplete] = useState(false);
 
-    const handleSave = () => {
-      setUserProfile(prev => ({
-        ...prev,
-        ...editedProfile
-      }));
-      setShowEditProfile(false);
+    useEffect(() => {
+      if (showAdModal && !adComplete) {
+        const timer = setInterval(() => {
+          setAdProgress(prev => {
+            if (prev >= 100) {
+              setAdComplete(true);
+              clearInterval(timer);
+              return 100;
+            }
+            return prev + 5;
+          });
+        }, 150);
+
+        return () => clearInterval(timer);
+      }
+    }, [showAdModal, adComplete]);
+
+    useEffect(() => {
+      if (showAdModal) {
+        setAdProgress(0);
+        setAdComplete(false);
+      }
+    }, [showAdModal]);
+
+    if (!showAdModal) return null;
+
+    const getRewardText = () => {
+      switch(adModalType) {
+        case 'hearts': return 'Full Hearts Restored!';
+        case 'xp': return '+20 Bonus XP!';
+        default: return 'Reward Earned!';
+      }
     };
 
     return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full max-h-[80vh] overflow-y-auto">
-          <div className="p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold text-gray-800">Edit Profile</h2>
+      <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+        <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full text-center p-6">
+          {!adComplete ? (
+            <>
+              <h2 className="text-xl font-bold text-gray-800 mb-4">Watching Ad...</h2>
+              <div className="bg-gray-200 rounded-full h-4 mb-4">
+                <div 
+                  className="bg-green-600 h-4 rounded-full transition-all duration-150"
+                  style={{ width: `${adProgress}%` }}
+                ></div>
+              </div>
+              <div className="bg-gradient-to-r from-blue-100 to-purple-100 rounded-lg p-6 mb-4">
+                <h3 className="font-semibold text-gray-700 mb-2">Learn French Too!</h3>
+                <p className="text-sm text-gray-600 mb-3">Join millions learning French with our app</p>
+                <div className="bg-blue-600 text-white px-4 py-2 rounded text-sm">
+                  Download FrenchMaster
+                </div>
+              </div>
+              <p className="text-sm text-gray-500">Ad will complete automatically...</p>
+            </>
+          ) : (
+            <>
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <CheckCircle className="w-8 h-8 text-green-600" />
+              </div>
+              <h2 className="text-xl font-bold text-gray-800 mb-2">{getRewardText()}</h2>
+              <p className="text-gray-600 mb-6">Thanks for watching! Your reward has been added.</p>
               <button
-                onClick={() => setShowEditProfile(false)}
-                className="text-gray-600 hover:text-gray-800 text-2xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100"
+                onClick={completeAdReward}
+                className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-6 rounded-lg transition-colors"
               >
-                ×
+                Claim Reward
               </button>
+            </>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  const InterstitialAdModal = () => {
+    const [adTimer, setAdTimer] = useState(5);
+
+    useEffect(() => {
+      if (showInterstitialAd && adTimer > 0) {
+        const timer = setTimeout(() => setAdTimer(prev => prev - 1), 1000);
+        return () => clearTimeout(timer);
+      }
+    }, [showInterstitialAd, adTimer]);
+
+    if (!showInterstitialAd) return null;
+
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 p-4">
+        <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full text-center p-8">
+          <div className="mb-6">
+            <h2 className="text-2xl font-bold text-gray-800 mb-2">Great Progress!</h2>
+            <p className="text-gray-600">You've completed 3 lessons today</p>
+          </div>
+          
+          <div className="bg-gradient-to-r from-purple-100 to-pink-100 rounded-xl p-6 mb-6">
+            <h3 className="text-xl font-semibold text-gray-700 mb-3">Travel to Spain!</h3>
+            <p className="text-gray-600 mb-4">Book your dream vacation to the Basque Country</p>
+            <div className="bg-purple-600 text-white px-6 py-3 rounded-lg inline-block">
+              Get 20% Off Flights
             </div>
+          </div>
+          
+          <div className="flex justify-between items-center">
+            <button
+              onClick={() => openModal('Remove Ads', 'Tired of ads? Upgrade to Premium!\n\n✨ Ad-free experience\n🔥 Unlimited hearts\n📚 All lessons unlocked')}
+              className="text-blue-600 hover:underline text-sm"
+            >
+              Remove ads
+            </button>
             
-            <div className="space-y-4 mb-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
-                <input
-                  type="text"
-                  value={editedProfile.name}
-                  onChange={(e) => setEditedProfile({...editedProfile, name: e.target.value})}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                <input
-                  type="email"
-                  value={editedProfile.email}
-                  onChange={(e) => setEditedProfile({...editedProfile, email: e.target.value})}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Daily Goal (minutes)</label>
-                <input
-                  type="number"
-                  value={editedProfile.dailyGoal}
-                  onChange={(e) => setEditedProfile({...editedProfile, dailyGoal: parseInt(e.target.value)})}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Weekly Goal (lessons)</label>
-                <input
-                  type="number"
-                  value={editedProfile.weeklyGoal}
-                  onChange={(e) => setEditedProfile({...editedProfile, weeklyGoal: parseInt(e.target.value)})}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
-              </div>
-            </div>
-            
-            <div className="flex space-x-3">
+            {adTimer > 0 ? (
+              <span className="text-gray-500 text-sm">Continue in {adTimer}s</span>
+            ) : (
               <button
-                onClick={() => setShowEditProfile(false)}
-                className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-3 px-6 rounded-lg transition-colors"
+                onClick={() => setShowInterstitialAd(false)}
+                className="bg-gray-800 text-white px-6 py-2 rounded-lg hover:bg-gray-700 transition-colors"
               >
-                Cancel
+                Continue Learning
               </button>
-              <button
-                onClick={handleSave}
-                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-colors"
-              >
-                Save Changes
-              </button>
-            </div>
+            )}
           </div>
         </div>
       </div>
     );
   };
 
-  // Modal Component
   const Modal = ({ isOpen, onClose, title, content }) => {
     if (!isOpen) return null;
 
@@ -1082,7 +1056,6 @@ const EuskeraApp = () => {
     );
   };
 
-  // Main App Render
   return (
     <div className="font-sans">
       {currentScreen === 'home' && <HomeScreen />}
@@ -1099,7 +1072,8 @@ const EuskeraApp = () => {
         content={modalContent.content}
       />
       
-      <EditProfileModal />
+      <RewardedAdModal />
+      <InterstitialAdModal />
     </div>
   );
 };
