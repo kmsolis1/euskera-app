@@ -1,4 +1,4 @@
-        <div className="bg-gradient-to-r from-blue-500 to-green-500 rounded-2xl shadow-xl p-6 mb-8 text-white">
+<div className="bg-gradient-to-r from-blue-500 to-green-500 rounded-2xl shadow-xl p-6 mb-8 text-white">
           <h3 className="text-xl font-semibold mb-4 flex items-center">
             <Zap className="w-6 h-6 mr-2" />
             {appLanguage === 'en' ? 'Your Learning Progress' : 'Tu Progreso de Aprendizaje'}
@@ -74,8 +74,7 @@
                       )}
                     </div>
                   </div>
-                  <div className={`w-full rounded-full h-2 ${isUnlocked ? 'bg-blue-200' : 'bg-gray-200'}`}>
-                    <div 
+                 <div 
   className={`h-2 rounded-full transition-all duration-300 ${
     unitProgress === 100
       ? 'bg-green-500'
@@ -85,7 +84,578 @@
   }`}
   style={{ width: `${unitProgress}%` }}
 ></div>
+import { Home } from 'lucide-react';
+import { Users } from 'lucide-react';
+import { Award } from 'lucide-react';
+import { Settings } from 'lucide-react';
+import { Star } from 'lucide-react';
+import { Heart } from 'lucide-react';
+import { Flame } from 'lucide-react';
+import { Book } from 'lucide-react';
+import { CheckCircle } from 'lucide-react';
+import { XCircle } from 'lucide-react';
+import { Trophy } from 'lucide-react';
+import { Crown } from 'lucide-react';
+import { Lock } from 'lucide-react';
+import { Target } from 'lucide-react';
+import { Zap } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
+import { User } from 'lucide-react';
+import { Edit3 } from 'lucide-react';
 
+const EuskeraApp = () => {
+  const [currentScreen, setCurrentScreen] = useState('home');
+  const [showModal, setShowModal] = useState(false);
+  const [modalContent, setModalContent] = useState({ title: '', content: '' });
+  const [appLanguage, setAppLanguage] = useState('en');
+  const [onboardingStep, setOnboardingStep] = useState(0);
+  
+  const [currentLesson, setCurrentLesson] = useState(0);
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [selectedAnswer, setSelectedAnswer] = useState('');
+  const [showResult, setShowResult] = useState(false);
+  const [lessonComplete, setLessonComplete] = useState(false);
+  const [correctAnswers, setCorrectAnswers] = useState(0);
+  const [showCorrectAnimation, setShowCorrectAnimation] = useState(false);
+  
+  const [hearts, setHearts] = useState(5);
+  const [maxHearts, setMaxHearts] = useState(5);
+  const [xp, setXp] = useState(120);
+  const [streak, setStreak] = useState(1);
+  const [userProgress, setUserProgress] = useState({ 1: true, 2: false });
+  const [isPremium, setIsPremium] = useState(false);
+  const [lastHeartRegenTime, setLastHeartRegenTime] = useState(Date.now());
+  const [heartRegenTimer, setHeartRegenTimer] = useState(null);
+  
+  const [showEditProfile, setShowEditProfile] = useState(false);
+  const [userProfile, setUserProfile] = useState({
+    name: "Euskera Learner",
+    email: "learner@example.com",
+    totalLessons: 1,
+    location: "San Francisco, CA",
+    basqueAncestry: "Bizkaia",
+    learningGoal: "Connect with heritage",
+    joinDate: "2025-05-26"
+  });
+  
+  const [showAdModal, setShowAdModal] = useState(false);
+  const [adModalType, setAdModalType] = useState('');
+
+  const translations = {
+    en: {
+      appName: "Euskera",
+      tagline: "Connect with your Basque heritage",
+      removeAds: "Remove Ads",
+      yourCulturalJourney: "Your Cultural Journey",
+      culturalLessons: "Cultural Lessons",
+      daysConnected: "Days Connected",
+      heritagePoints: "Heritage Points",
+      connectWithAncestors: "Connect with your ancestors",
+      premium: "Premium",
+      review: "Review",
+      beginJourney: "Begin Journey",
+      sponsoredContent: "Sponsored Content",
+      visitBasqueCountry: "Visit the Basque Country",
+      experienceCulture: "Experience the culture you're learning firsthand",
+      planHeritage: "Plan Your Heritage Journey",
+      home: "Home",
+      profile: "Profile",
+      friends: "Friends",
+      achievements: "Achievements",
+      settings: "Settings",
+      dayStreak: "Day Streak",
+      totalXP: "Total XP",
+      lessons: "Lessons",
+      startCommunity: "Start Your Community",
+      inviteFriends: "Invite friends to learn Basque together!",
+      inviteFriendsBtn: "Invite Friends",
+      yourAchievements: "Your Achievements",
+      firstSteps: "First Steps",
+      completeFirstLesson: "Complete your first lesson",
+      appSettings: "App Settings",
+      privacyPolicy: "Privacy Policy",
+      termsOfService: "Terms of Service",
+      editProfile: "Edit Profile",
+      save: "Save",
+      cancel: "Cancel",
+      name: "Name",
+      email: "Email",
+      location: "Location",
+      basqueAncestry: "Basque Ancestry",
+      learningGoal: "Learning Goal",
+      memberSince: "Member since",
+      profileUpdated: "Profile Updated",
+      profileUpdateSuccess: "Your profile has been updated successfully!",
+      continue: "Continue",
+      heartsRefill: "Hearts refill over time",
+      heartsRefillIn: "Next heart in",
+      heartsFull: "Hearts full!",
+      minutes: "minutes",
+      seconds: "seconds"
+    },
+    es: {
+      appName: "Euskera",
+      tagline: "Conecta con tu herencia vasca",
+      removeAds: "Eliminar Anuncios",
+      yourCulturalJourney: "Tu Viaje Cultural",
+      culturalLessons: "Lecciones Culturales",
+      daysConnected: "Días Conectado",
+      heritagePoints: "Puntos de Herencia",
+      connectWithAncestors: "Conecta con tus antepasados",
+      premium: "Premium",
+      review: "Repasar",
+      beginJourney: "Comenzar Viaje",
+      sponsoredContent: "Contenido Patrocinado",
+      visitBasqueCountry: "Visita el País Vasco",
+      experienceCulture: "Experimenta la cultura que estás aprendiendo de primera mano",
+      planHeritage: "Planifica Tu Viaje Patrimonial",
+      home: "Inicio",
+      profile: "Perfil",
+      friends: "Amigos",
+      achievements: "Logros",
+      settings: "Configuración",
+      dayStreak: "Racha de Días",
+      totalXP: "XP Total",
+      lessons: "Lecciones",
+      startCommunity: "Inicia Tu Comunidad",
+      inviteFriends: "¡Invita a amigos a aprender euskera juntos!",
+      inviteFriendsBtn: "Invitar Amigos",
+      yourAchievements: "Tus Logros",
+      firstSteps: "Primeros Pasos",
+      completeFirstLesson: "Completa tu primera lección",
+      appSettings: "Configuración de la Aplicación",
+      privacyPolicy: "Política de Privacidad",
+      termsOfService: "Términos del Servicio",
+      editProfile: "Editar Perfil",
+      save: "Guardar",
+      cancel: "Cancelar",
+      name: "Nombre",
+      email: "Correo electrónico",
+      location: "Ubicación",
+      basqueAncestry: "Ascendencia Vasca",
+      learningGoal: "Objetivo de Aprendizaje",
+      memberSince: "Miembro desde",
+      profileUpdated: "Perfil Actualizado",
+      profileUpdateSuccess: "¡Tu perfil se ha actualizado correctamente!",
+      continue: "Continuar",
+      heartsRefill: "Los corazones se rellenan con el tiempo",
+      heartsRefillIn: "Próximo corazón en",
+      heartsFull: "¡Corazones llenos!",
+      minutes: "minutos",
+      seconds: "segundos"
+    }
+  };
+
+  const t = translations[appLanguage];
+
+  const lessons = [
+    {
+      id: 1,
+      title: appLanguage === 'en' ? "Kaixo! (Hello!)" : "Kaixo! (¡Hola!)",
+      description: appLanguage === 'en' ? "Learn your first Basque greeting" : "Aprende tu primer saludo vasco",
+      difficulty: appLanguage === 'en' ? "Beginner" : "Principiante",
+      xp: 10,
+      isPremium: false,
+      category: appLanguage === 'en' ? "Unit 1: Basic Greetings" : "Unidad 1: Saludos Básicos",
+      unit: 1,
+      lessonInUnit: 1,
+      totalLessonsInUnit: 5,
+      questions: [
+        {
+          type: "multiple-choice",
+          question: appLanguage === 'en' 
+            ? "How do you say 'Hello' in Euskera?"
+            : "¿Cómo se dice 'Hola' en euskera?",
+          options: ["Kaixo", "Agur", "Mesedez", "Eskerrik asko"],
+          correct: "Kaixo",
+          translation: appLanguage === 'en' ? "Hello" : "Hola",
+          explanation: appLanguage === 'en' 
+            ? "Kaixo is the most common greeting, used any time of day."
+            : "Kaixo es el saludo más común, usado a cualquier hora del día."
+        },
+        {
+          type: "multiple-choice",
+          question: appLanguage === 'en' 
+            ? "When someone says 'Kaixo!' what do you say back?"
+            : "Cuando alguien dice '¡Kaixo!', ¿qué respondes?",
+          options: ["Kaixo!", "Agur", "Ez", "Bai"],
+          correct: "Kaixo!",
+          translation: appLanguage === 'en' ? "Hello!" : "¡Hola!",
+          explanation: appLanguage === 'en' 
+            ? "Just like English - you respond to 'Hello' with 'Hello'!"
+            : "¡Igual que en español - respondes 'Hola' con 'Hola'!"
+        }
+      ]
+    },
+    {
+      id: 2,
+      title: appLanguage === 'en' ? "Bai eta Ez (Yes & No)" : "Bai eta Ez (Sí y No)",
+      description: appLanguage === 'en' ? "The two most important words" : "Las dos palabras más importantes",
+      difficulty: appLanguage === 'en' ? "Beginner" : "Principiante",
+      xp: 10,
+      isPremium: false,
+      category: appLanguage === 'en' ? "Unit 1: Basic Greetings" : "Unidad 1: Saludos Básicos",
+      unit: 1,
+      lessonInUnit: 2,
+      totalLessonsInUnit: 5,
+      questions: [
+        {
+          type: "multiple-choice",
+          question: appLanguage === 'en' 
+            ? "How do you say 'Yes'?"
+            : "¿Cómo se dice 'Sí'?",
+          options: ["Bai", "Ez", "Kaixo", "Agur"],
+          correct: "Bai",
+          translation: appLanguage === 'en' ? "Yes" : "Sí",
+          explanation: appLanguage === 'en' 
+            ? "Bai (sounds like 'bye') means yes."
+            : "Bai (suena como 'bai') significa sí."
+        },
+        {
+          type: "multiple-choice",
+          question: appLanguage === 'en' 
+            ? "How do you say 'No'?"
+            : "¿Cómo se dice 'No'?",
+          options: ["Ez", "Bai", "Kaixo", "Agur"],
+          correct: "Ez",
+          translation: appLanguage === 'en' ? "No" : "No",
+          explanation: appLanguage === 'en' 
+            ? "Ez (sounds like 'eth') means no."
+            : "Ez (suena como 'eth') significa no."
+        }
+      ]
+    },
+    {
+      id: 3,
+      title: appLanguage === 'en' ? "Eskerrik asko (Thank you)" : "Eskerrik asko (Gracias)",
+      description: appLanguage === 'en' ? "Show appreciation in Euskera" : "Muestra aprecio en euskera",
+      difficulty: appLanguage === 'en' ? "Beginner" : "Principiante",
+      xp: 10,
+      isPremium: false,
+      category: appLanguage === 'en' ? "Unit 1: Basic Greetings" : "Unidad 1: Saludos Básicos",
+      unit: 1,
+      lessonInUnit: 3,
+      totalLessonsInUnit: 5,
+      questions: [
+        {
+          type: "multiple-choice",
+          question: appLanguage === 'en' 
+            ? "How do you say 'Thank you'?"
+            : "¿Cómo se dice 'Gracias'?",
+          options: ["Eskerrik asko", "Kaixo", "Agur", "Barkatu"],
+          correct: "Eskerrik asko",
+          translation: appLanguage === 'en' ? "Thank you" : "Gracias",
+          explanation: appLanguage === 'en' 
+            ? "Eskerrik asko means 'thank you' - literally 'many thanks'."
+            : "Eskerrik asko significa 'gracias' - literalmente 'muchas gracias'."
+        }
+      ]
+    },
+    {
+      id: 4,
+      title: appLanguage === 'en' ? "Agur (Goodbye)" : "Agur (Adiós)",
+      description: appLanguage === 'en' ? "End conversations politely" : "Termina conversaciones cortésmente",
+      difficulty: appLanguage === 'en' ? "Beginner" : "Principiante",
+      xp: 10,
+      isPremium: false,
+      category: appLanguage === 'en' ? "Unit 1: Basic Greetings" : "Unidad 1: Saludos Básicos",
+      unit: 1,
+      lessonInUnit: 4,
+      totalLessonsInUnit: 5,
+      questions: [
+        {
+          type: "multiple-choice",
+          question: appLanguage === 'en' 
+            ? "How do you say 'Goodbye'?"
+            : "¿Cómo se dice 'Adiós'?",
+          options: ["Agur", "Kaixo", "Bai", "Ez"],
+          correct: "Agur",
+          translation: appLanguage === 'en' ? "Goodbye" : "Adiós",
+          explanation: appLanguage === 'en' 
+            ? "Agur is the standard way to say goodbye."
+            : "Agur es la forma estándar de decir adiós."
+        }
+      ]
+    },
+    {
+      id: 5,
+      title: appLanguage === 'en' ? "Conversation Practice" : "Práctica de Conversación",
+      description: appLanguage === 'en' ? "Put it all together" : "Junta todo lo aprendido",
+      difficulty: appLanguage === 'en' ? "Beginner" : "Principiante",
+      xp: 15,
+      isPremium: false,
+      category: appLanguage === 'en' ? "Unit 1: Basic Greetings" : "Unidad 1: Saludos Básicos",
+      unit: 1,
+      lessonInUnit: 5,
+      totalLessonsInUnit: 5,
+      questions: [
+        {
+          type: "multiple-choice",
+          question: appLanguage === 'en' 
+            ? "Someone says 'Kaixo!' You say 'Kaixo!' They say 'Eskerrik asko.' What do they mean?"
+            : "Alguien dice '¡Kaixo!' Tú dices '¡Kaixo!' Dicen 'Eskerrik asko.' ¿Qué significa?",
+          options: [
+            appLanguage === 'en' ? "Thank you" : "Gracias",
+            appLanguage === 'en' ? "Goodbye" : "Adiós", 
+            appLanguage === 'en' ? "Yes" : "Sí",
+            appLanguage === 'en' ? "No" : "No"
+          ],
+          correct: appLanguage === 'en' ? "Thank you" : "Gracias",
+          translation: appLanguage === 'en' ? "Thank you" : "Gracias",
+          explanation: appLanguage === 'en' 
+            ? "They're thanking you for responding to their greeting!"
+            : "¡Te están agradeciendo por responder a su saludo!"
+        },
+        {
+          type: "multiple-choice",
+          question: appLanguage === 'en' 
+            ? "What's the correct order for a simple greeting?"
+            : "¿Cuál es el orden correcto para un saludo simple?",
+          options: [
+            "Kaixo → Kaixo → Agur",
+            "Agur → Kaixo → Bai", 
+            "Ez → Kaixo → Agur",
+            "Kaixo → Ez → Agur"
+          ],
+          correct: "Kaixo → Kaixo → Agur",
+          translation: appLanguage === 'en' ? "Hello → Hello → Goodbye" : "Hola → Hola → Adiós",
+          explanation: appLanguage === 'en' 
+            ? "A basic conversation: greet each other, then say goodbye."
+            : "Una conversación básica: se saludan, luego se despiden."
+        }
+      ]
+    },
+    {
+      id: 6,
+      title: appLanguage === 'en' ? "Ni (I)" : "Ni (Yo)",
+      description: appLanguage === 'en' ? "Talk about yourself" : "Habla de ti mismo",
+      difficulty: appLanguage === 'en' ? "Beginner" : "Principiante",
+      xp: 15,
+      isPremium: false,
+      category: appLanguage === 'en' ? "Unit 2: Introducing Yourself" : "Unidad 2: Presentarse",
+      unit: 2,
+      lessonInUnit: 1,
+      totalLessonsInUnit: 4,
+      questions: [
+        {
+          type: "multiple-choice",
+          question: appLanguage === 'en' 
+            ? "How do you say 'I' in Euskera?"
+            : "¿Cómo se dice 'Yo' en euskera?",
+          options: ["Ni", "Zu", "Hura", "Gu"],
+          correct: "Ni",
+          translation: appLanguage === 'en' ? "I" : "Yo",
+          explanation: appLanguage === 'en' 
+            ? "Ni means 'I' - the word for yourself."
+            : "Ni significa 'yo' - la palabra para ti mismo."
+        }
+      ]
+    }
+  ];
+
+  // Calculate total lessons and units
+  const totalLessons = lessons.length;
+  const totalUnits = Math.max(...lessons.map(l => l.unit));
+  const completedLessons = Object.values(userProgress).filter(Boolean).length;
+  const progressPercentage = Math.round((completedLessons / totalLessons) * 100);
+
+  const openModal = (title, content) => {
+    setModalContent({ title, content });
+    setShowModal(true);
+  };
+
+  const startLesson = (lessonIndex) => {
+    const lesson = lessons[lessonIndex];
+    if (lesson.isPremium && !isPremium) {
+      openModal('Premium Required', 'This lesson is part of Euskera Plus. Upgrade to access all lessons and remove ads!');
+      return;
+    }
+    
+    setCurrentLesson(lessonIndex);
+    setCurrentQuestion(0);
+    setSelectedAnswer('');
+    setShowResult(false);
+    setLessonComplete(false);
+    setCorrectAnswers(0);
+    setCurrentScreen('lesson');
+  };
+
+  const handleAnswerSelect = (answer) => {
+    setSelectedAnswer(answer);
+    setShowResult(true);
+    
+    const currentQ = lessons[currentLesson].questions[currentQuestion];
+    const isCorrect = answer === currentQ.correct;
+    
+    if (isCorrect) {
+      setXp(prevXp => prevXp + 5);
+      setCorrectAnswers(prev => prev + 1);
+      setShowCorrectAnimation(true);
+      setTimeout(() => setShowCorrectAnimation(false), 1000);
+    } else {
+      if (!isPremium && hearts > 1) {
+        setHearts(prevHearts => prevHearts - 1);
+      }
+    }
+  };
+    
+  const handleContinue = () => {
+    const currentQ = lessons[currentLesson].questions[currentQuestion];
+    const isCorrect = selectedAnswer === currentQ.correct;
+    
+    if (currentQuestion < lessons[currentLesson].questions.length - 1) {
+      setCurrentQuestion(currentQuestion + 1);
+      setSelectedAnswer('');
+      setShowResult(false);
+    } else {
+      setLessonComplete(true);
+      const newProgress = { ...userProgress };
+      newProgress[lessons[currentLesson].id] = true;
+      setUserProgress(newProgress);
+      setXp(prevXp => prevXp + lessons[currentLesson].xp);
+    }
+  };
+
+  const goHome = () => {
+    setCurrentScreen('home');
+    setCurrentQuestion(0);
+    setSelectedAnswer('');
+    setShowResult(false);
+    setLessonComplete(false);
+    setCorrectAnswers(0);
+  };
+
+  const watchAdForReward = (type) => {
+    setAdModalType(type);
+    setShowAdModal(true);
+  };
+
+  const completeAdReward = () => {
+    switch(adModalType) {
+      case 'hearts':
+        setHearts(5);
+        break;
+      case 'xp':
+        setXp(prev => prev + 20);
+        break;
+      default:
+        break;
+    }
+    setShowAdModal(false);
+    setAdModalType('');
+  };
+
+  const HEART_REGEN_TIME = 20 * 60 * 1000;
+  
+  const regenerateHearts = () => {
+    const now = Date.now();
+    const timeSinceLastRegen = now - lastHeartRegenTime;
+    const heartsToAdd = Math.floor(timeSinceLastRegen / HEART_REGEN_TIME);
+    
+    if (heartsToAdd > 0 && hearts < maxHearts) {
+      const newHearts = Math.min(hearts + heartsToAdd, maxHearts);
+      setHearts(newHearts);
+      setLastHeartRegenTime(now - (timeSinceLastRegen % HEART_REGEN_TIME));
+    }
+  };
+
+  const getTimeUntilNextHeart = () => {
+    if (hearts >= maxHearts) return 0;
+    const timeSinceLastRegen = Date.now() - lastHeartRegenTime;
+    const timeUntilNext = HEART_REGEN_TIME - (timeSinceLastRegen % HEART_REGEN_TIME);
+    return timeUntilNext;
+  };
+
+  const formatTime = (ms) => {
+    const minutes = Math.floor(ms / (60 * 1000));
+    const seconds = Math.floor((ms % (60 * 1000)) / 1000);
+    return { minutes, seconds };
+  };
+
+  useEffect(() => {
+    regenerateHearts();
+    
+    if (hearts < maxHearts) {
+      const timer = setInterval(() => {
+        regenerateHearts();
+      }, 1000);
+      setHeartRegenTimer(timer);
+      return () => clearInterval(timer);
+    } else {
+      if (heartRegenTimer) {
+        clearInterval(heartRegenTimer);
+        setHeartRegenTimer(null);
+      }
+    }
+  }, [hearts, maxHearts, lastHeartRegenTime]);
+
+  const groupedLessons = lessons.reduce((acc, lesson) => {
+    if (!acc[lesson.category]) {
+      acc[lesson.category] = [];
+    }
+    acc[lesson.category].push(lesson);
+    return acc;
+  }, {});
+
+  const HeartRegenTimer = () => {
+    const [timeLeft, setTimeLeft] = useState(getTimeUntilNextHeart());
+
+    useEffect(() => {
+      const timer = setInterval(() => {
+        setTimeLeft(getTimeUntilNextHeart());
+      }, 1000);
+      return () => clearInterval(timer);
+    }, []);
+
+    const { minutes, seconds } = formatTime(timeLeft);
+
+    return (
+      <span>
+        {t.heartsRefillIn} {minutes}:{seconds.toString().padStart(2, '0')}
+      </span>
+    );
+  };
+
+  const Navigation = () => (
+    <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg">
+      <div className="max-w-4xl mx-auto px-4">
+        <div className="flex justify-around py-3">
+          <button 
+            onClick={() => setCurrentScreen('home')}
+            className={`flex flex-col items-center space-y-1 transition-colors ${currentScreen === 'home' ? 'text-blue-600' : 'text-gray-400'}`}
+          >
+            <Home className="w-6 h-6" />
+            <span className="text-xs font-medium">{t.home}</span>
+          </button>
+          <button 
+            onClick={() => setCurrentScreen('profile')}
+            className={`flex flex-col items-center space-y-1 transition-colors ${currentScreen === 'profile' ? 'text-blue-600' : 'text-gray-400'}`}
+          >
+            <User className="w-6 h-6" />
+            <span className="text-xs font-medium">{t.profile}</span>
+          </button>
+          <button 
+            onClick={() => setCurrentScreen('friends')}
+            className={`flex flex-col items-center space-y-1 transition-colors ${currentScreen === 'friends' ? 'text-blue-600' : 'text-gray-400'}`}
+          >
+            <Users className="w-6 h-6" />
+            <span className="text-xs font-medium">{t.friends}</span>
+          </button>
+          <button 
+            onClick={() => setCurrentScreen('achievements')}
+            className={`flex flex-col items-center space-y-1 transition-colors ${currentScreen === 'achievements' ? 'text-blue-600' : 'text-gray-400'}`}
+          >
+            <Award className="w-6 h-6" />
+            <span className="text-xs font-medium">{t.achievements}</span>
+          </button>
+          <button 
+            onClick={() => setCurrentScreen('settings')}
+            className={`flex flex-col items-center space-y-1 transition-colors ${currentScreen === 'settings' ? 'text-blue-600' : 'text-gray-400'}`}
+          >
+            <Settings className="w-6 h-6" />
+            <span className="text-xs font-medium">{t.settings}</span>
+          </button>
+        </div>
       </div>
     </div>
   );
